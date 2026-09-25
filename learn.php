@@ -7,6 +7,8 @@ $ranks = $user ? lesson_ranks((int) $user['id']) : [];
 $current = recommended_lesson($done);
 $currentTier = module_of($current)['tier'];
 $ngUnlocked = ngplus_unlocked($done);
+$infUnlocked = infierno_unlocked($done);
+$ngDone = count(array_intersect(ngplus_lessons(), $done));
 $mainDone = count(array_intersect(main_lessons(), $done));
 
 // Datos de cada lección para el panel de detalle.
@@ -22,11 +24,12 @@ foreach (course() as $m) {
             'color' => $m['color'],
             'stage' => stage_label($slug),
             'minutes' => (int) ($l['minutes'] ?? 8),
-            'xp' => array_sum(array_map('step_xp', $l['steps'])) + 50,
+            'xp' => lesson_total_xp($l),
             'steps' => count($l['steps']),
             'stars' => lesson_difficulty($slug),
             'rank' => $ranks[$slug] ?? null,
             'ngplus' => !empty($m['ngplus']),
+            'modo' => module_mode($m),
         ];
     }
 }
@@ -43,7 +46,7 @@ require __DIR__ . '/includes/header.php';
     <div class="clock" id="clock">00:00</div>
     <div class="tier-tabs" role="tablist">
       <?php foreach (TIERS as $key => $label): ?>
-        <button class="tier-tab <?= $key === $currentTier ? 'active' : '' ?> <?= $key === 'ngplus' ? 'tier-ngplus' : '' ?>" data-tier="<?= $key ?>" role="tab"><?= $key === 'ngplus' && !$ngUnlocked ? '🔒 ' : '' ?><?= e($label) ?></button>
+        <button class="tier-tab <?= $key === $currentTier ? 'active' : '' ?> <?= $key === 'ngplus' ? 'tier-ngplus' : '' ?> <?= $key === 'infierno' ? 'tier-infierno' : '' ?>" data-tier="<?= $key ?>" role="tab"><?= ($key === 'ngplus' && !$ngUnlocked) || ($key === 'infierno' && !$infUnlocked) ? '🔒 ' : '' ?><?= $key === 'infierno' ? '🔥 ' : '' ?><?= e($label) ?></button>
       <?php endforeach; ?>
     </div>
   </div>
@@ -54,8 +57,21 @@ require __DIR__ . '/includes/header.php';
 
   <div class="select-body">
     <div class="song-list" id="song-list">
-      <?php $ngBanner = false; foreach (course() as $mi => $m): ?>
-        <div class="song-group <?= !empty($m['ngplus']) ? 'is-ngplus' : '' ?>" data-tier="<?= e($m['tier']) ?>" style="--mod: <?= e($m['color']) ?>">
+      <?php $ngBanner = false; $infBanner = false; foreach (course() as $mi => $m): ?>
+        <div class="song-group is-<?= e(module_mode($m)) ?>" data-tier="<?= e($m['tier']) ?>" style="--mod: <?= e($m['color']) ?>">
+          <?php if (module_mode($m) === 'infierno' && !$infBanner): $infBanner = true; ?>
+            <div class="infierno-banner">
+              <div class="infierno-logo">INFIERNO</div>
+              <ul class="infierno-rules">
+                <li>🚫💡 Sin pistas</li><li>🚫👀 Sin soluciones</li><li>❤️❤️❤️ 3 vidas por lección</li><li>☠️ Game Over = pierdes el progreso</li><li>⭐ XP ×2</li>
+              </ul>
+              <?php if ($infUnlocked): ?>
+                <p>🔓 <b>Las puertas están abiertas.</b> Buena suerte… la vas a necesitar. 😈</p>
+              <?php else: ?>
+                <p>🔒 Se desbloquea al terminar el juego principal y el New Game Plus (<b><?= $mainDone + $ngDone ?>/<?= count(main_lessons()) + count(ngplus_lessons()) ?></b>). Puedes asomarte… bajo tu propio riesgo. 🔥</p>
+              <?php endif; ?>
+            </div>
+          <?php endif; ?>
           <?php if (!empty($m['ngplus']) && !$ngBanner): $ngBanner = true; ?>
             <div class="ngplus-banner">
               <div class="ngplus-logo">NEW GAME<span>+</span></div>

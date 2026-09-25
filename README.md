@@ -7,6 +7,9 @@ Pensada para personas sin ningún conocimiento previo de programación.
 - 🌀 **New Game Plus**: 12 lecciones avanzadas en 4 módulos más (Python pro, pandas avanzado, Excel pro
   con openpyxl y estadística/predicción con scikit-learn) que se desbloquean al terminar el juego principal,
   con su propio Jefe Final y el Trofeo de Platino.
+- 🔥 **Nivel Infierno**: 9 lecciones de nivel experto en 3 círculos, con reglas hardcore: sin pistas,
+  sin soluciones y 3 vidas por lección. Si pierdes todas: GAME OVER y se pierde el progreso (y la XP) de
+  esa lección. A cambio, XP ×2. Se desbloquea al terminar el NG+; el jefe final es Lucifer.
 - 💻 **Python corre en el navegador** gracias a [Pyodide](https://pyodide.org) (WebAssembly). No hay que instalar Python.
 - ✅ **Ejercicios que se corrigen solos**, con pistas, solución y errores explicados en español.
 - 🎮 **Gamificación**: XP, 8 niveles, rachas diarias, 14 logros, ranking, confeti y sonidos.
@@ -37,6 +40,9 @@ Pensada para personas sin ningún conocimiento previo de programación.
 | NG+ 2 | ⚡ pandas avanzado | merge, series de tiempo (resample, rolling), texto y regex, melt / pivot |
 | NG+ 3 | 📗 Excel pro | Libros de varias hojas con pandas, openpyxl (formato, fórmulas, colores) |
 | NG+ 4 | 🔮 Estadística y predicción | Atípicos (IQR, z-score), correlación, regresión con scikit-learn, 👹 Jefe Final NG+ |
+| 🔥 I | Algoritmos malditos | Generadores y yield, clases y dataclasses, complejidad (búsqueda binaria, sets) |
+| 🔥 II | pandas demoníaco | transform, rank y top-N por grupo, ventanas (shift, diff, cumsum), np.where / np.select / pd.cut |
+| 🔥 III | El abismo | t-test, chi² y bootstrap; clasificación con matriz de confusión; 😈 Jefe Final: Lucifer (pipeline a prueba de todo) |
 
 ## Instalación con XAMPP
 

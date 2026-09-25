@@ -111,23 +111,49 @@ const TIERS = [
     'dificil' => 'Difícil',
     'experto' => 'Experto',
     'ngplus' => 'NG+',
+    'infierno' => 'Infierno',
 ];
 
-/** ¿La lección pertenece al New Game Plus? */
-function is_ngplus(string $slug): bool
+/** Modo de juego de un módulo: 'main' (juego principal), 'ngplus' o 'infierno'. */
+function module_mode(?array $m): string
 {
-    return !empty(module_of($slug)['ngplus']);
+    return $m['modo'] ?? (!empty($m['ngplus']) ? 'ngplus' : 'main');
 }
 
-/** Lecciones del juego principal (sin NG+). */
+function lesson_mode(string $slug): string
+{
+    return module_mode(module_of($slug));
+}
+
+function is_ngplus(string $slug): bool
+{
+    return lesson_mode($slug) === 'ngplus';
+}
+
+function is_infierno(string $slug): bool
+{
+    return lesson_mode($slug) === 'infierno';
+}
+
+function lessons_of_mode(string $mode): array
+{
+    return array_values(array_filter(lesson_order(), fn($s) => lesson_mode($s) === $mode));
+}
+
+/** Lecciones del juego principal (sin NG+ ni Infierno). */
 function main_lessons(): array
 {
-    return array_values(array_filter(lesson_order(), fn($s) => !is_ngplus($s)));
+    return lessons_of_mode('main');
 }
 
 function ngplus_lessons(): array
 {
-    return array_values(array_filter(lesson_order(), 'is_ngplus'));
+    return lessons_of_mode('ngplus');
+}
+
+function infierno_lessons(): array
+{
+    return lessons_of_mode('infierno');
 }
 
 /** El New Game Plus se "desbloquea" al terminar todo el juego principal. */
@@ -136,11 +162,31 @@ function ngplus_unlocked(array $done): bool
     return !array_diff(main_lessons(), $done);
 }
 
+/** El Infierno se desbloquea al terminar el juego principal y el NG+. */
+function infierno_unlocked(array $done): bool
+{
+    return ngplus_unlocked($done) && !array_diff(ngplus_lessons(), $done);
+}
+
+/** En el Infierno todo da el doble de XP. */
+function xp_multiplier(string $slug): int
+{
+    return is_infierno($slug) ? 2 : 1;
+}
+
+/** XP total que puede dar una lección (pasos + bono por terminarla). */
+function lesson_total_xp(array $lesson): int
+{
+    return (array_sum(array_map('step_xp', $lesson['steps'])) + 50) * xp_multiplier($lesson['slug']);
+}
+
+const MODE_PREFIX = ['main' => '', 'ngplus' => 'NG+ ', 'infierno' => '🔥 '];
+
 /** Dificultad de 1 a 9 estrellas según la posición de la lección en el curso. */
 function lesson_difficulty(string $slug): int
 {
-    // El juego principal y el NG+ tienen cada uno su propia escala de 1 a 9 estrellas.
-    $order = is_ngplus($slug) ? ngplus_lessons() : main_lessons();
+    // Cada modo (principal, NG+, Infierno) tiene su propia escala de 1 a 9 estrellas.
+    $order = lessons_of_mode(lesson_mode($slug));
     $i = array_search($slug, $order, true);
     return 1 + (int) floor(($i ?: 0) * 8 / max(1, count($order) - 1));
 }
@@ -148,29 +194,27 @@ function lesson_difficulty(string $slug): int
 /** Número de "nivel" estilo videojuego: módulo-lección (ej. 2-1). */
 function stage_label(string $slug): string
 {
-    $main = 0;
-    $plus = 0;
+    $cuenta = [];
     foreach (course() as $m) {
-        $ng = !empty($m['ngplus']);
-        $n = $ng ? ++$plus : ++$main;
+        $modo = module_mode($m);
+        $n = $cuenta[$modo] = ($cuenta[$modo] ?? 0) + 1;
         $li = array_search($slug, $m['lessons'], true);
         if ($li !== false) {
-            return ($ng ? 'NG+ ' : '') . $n . '-' . ($li + 1);
+            return MODE_PREFIX[$modo] . $n . '-' . ($li + 1);
         }
     }
     return '?';
 }
 
-/** Número de módulo para mostrar (el NG+ reinicia la cuenta). */
+/** Número de módulo para mostrar (cada modo reinicia la cuenta). */
 function module_number(array $module): string
 {
-    $main = 0;
-    $plus = 0;
+    $cuenta = [];
     foreach (course() as $m) {
-        $ng = !empty($m['ngplus']);
-        $n = $ng ? ++$plus : ++$main;
+        $modo = module_mode($m);
+        $n = $cuenta[$modo] = ($cuenta[$modo] ?? 0) + 1;
         if ($m['slug'] === $module['slug']) {
-            return ($ng ? 'NG+ ' : '') . $n;
+            return MODE_PREFIX[$modo] . $n;
         }
     }
     return '?';

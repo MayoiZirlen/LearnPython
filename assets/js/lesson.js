@@ -12,6 +12,9 @@
   const BIEN = ['¡Excelente! 🎉', '¡Lo lograste! 💪', '¡Eres una máquina! 🤖', '¡Perfecto! ✨', '¡Así se hace! 🙌', '¡Brillante! 💡'];
   const MAL = ['Casi… ¡inténtalo otra vez! 💪', 'No pasa nada, así se aprende 🌱', 'Buen intento, revisa la pista 🔍', 'Uy, todavía no. ¡Tú puedes! 🚀'];
   const azar = (a) => a[Math.floor(Math.random() * a.length)];
+  if (L.infierno) {
+    MAL.splice(0, MAL.length, '¡Te quemaste! 🔥', '¡Auch! Eso dolió 💀', 'El Infierno no perdona 😈', '¡Cuidado, te quedan pocas vidas! ❤️‍🔥');
+  }
 
   let sonido = App.sonidoActivo();
   const tono = (notas) => App.tono(notas);
@@ -24,6 +27,50 @@
   btnSonido.onclick = () => { sonido = !sonido; pintarSonido(); try { localStorage.setItem('pyaprende:sonido', sonido ? 'si' : 'no'); } catch (e) { /* */ } };
   pintarSonido();
   document.querySelector('.lesson-top').appendChild(btnSonido);
+
+  // ---------- Modo Infierno: 3 vidas, sin pistas ni soluciones ----------
+  const INFIERNO = !!L.infierno;
+  const VIDAS_MAX = 3;
+  let vidas = VIDAS_MAX;
+  const hud = document.createElement('div');
+  if (INFIERNO) {
+    hud.className = 'hearts';
+    document.querySelector('.lesson-top').insertBefore(hud, document.querySelector('.lesson-progress'));
+  }
+  function pintarVidas(perdida) {
+    if (!INFIERNO) return;
+    hud.innerHTML = Array.from({ length: VIDAS_MAX }, (_, k) => `<span class="heart ${k < vidas ? '' : 'lost'} ${perdida && k === vidas ? 'breaking' : ''}">${k < vidas ? '❤️' : '🖤'}</span>`).join('');
+  }
+  pintarVidas();
+
+  /** Se llama en cada respuesta incorrecta o revisión fallida. */
+  function perderVida() {
+    if (!INFIERNO || vidas <= 0) return;
+    vidas--;
+    pintarVidas(true);
+    document.body.classList.remove('hurt'); void document.body.offsetWidth; document.body.classList.add('hurt');
+    if (vidas === 0) setTimeout(gameOver, 700);
+  }
+
+  async function gameOver() {
+    App.tono([[392, 0, 0.25, 'sawtooth'], [330, 0.25, 0.25, 'sawtooth'], [262, 0.5, 0.25, 'sawtooth'], [196, 0.75, 0.7, 'sawtooth']]);
+    const res = await App.api('reset', { lesson: L.slug });
+    const perdida = res && res.ok ? res.xp_perdida : 0;
+    const capa = document.createElement('div');
+    capa.className = 'game-over';
+    capa.innerHTML = `<div class="go-box">
+        <div class="go-title">GAME OVER</div>
+        <div class="go-skull">☠️</div>
+        <p>Te quedaste sin vidas en <b>${E(L.title)}</b>.</p>
+        ${perdida ? `<p class="go-lost">−${perdida} XP · el progreso de esta lección se perdió</p>` : '<p class="go-lost">El progreso de esta lección se perdió</p>'}
+        <div class="finish-actions">
+          <button class="btn btn-primary btn-lg" data-retry>🔥 Reintentar</button>
+          <a class="btn btn-ghost" href="learn.php">🏳️ Huir al mapa</a>
+        </div>
+      </div>`;
+    document.body.appendChild(capa);
+    capa.querySelector('[data-retry]').onclick = () => location.reload();
+  }
 
   const califica = (s) => s.type === 'quiz' || s.type === 'exercise';
   const puedeAvanzar = (i) => !califica(L.steps[i]) || hechos.has(i);
@@ -129,6 +176,7 @@
         marcarHecho(i);
       } else {
         sonidoMal();
+        perderVida();
         b.classList.add('wrong', 'shake');
         b.disabled = true;
         fb.className = 'feedback bad';
@@ -148,7 +196,7 @@
         <div class="runner-actions">
           <button class="btn btn-ghost" data-run>▶ Ejecutar</button>
           <button class="btn btn-primary" data-check>✅ Comprobar</button>
-          ${pistas.length ? '<button class="btn btn-ghost" data-hint>💡 Pista</button>' : ''}
+          ${pistas.length && !INFIERNO ? '<button class="btn btn-ghost" data-hint>💡 Pista</button>' : ''}
           <button class="btn btn-ghost" data-sol hidden>👀 Ver solución</button>
           <button class="btn btn-ghost" data-reset title="Volver al código inicial">↺</button>
         </div>
@@ -216,7 +264,8 @@
         const msg = res.error ? 'Tu código tiene un error. Míralo abajo 👇' : E(res.check_msg);
         fb.innerHTML = `<b>${azar(MAL)}</b><div>${msg}</div>`;
         setTimeout(() => fb.classList.remove('shake'), 500);
-        if (fallos >= 2 && s.solution) btnSol.hidden = false;
+        if (fallos >= 2 && s.solution && !INFIERNO) btnSol.hidden = false;
+        perderVida();
       }
     };
   }
@@ -225,7 +274,7 @@
     guardarCodigo();
     const ganado = L.steps.reduce((acc, s, i) => acc + (hechos.has(i) ? s.xp : 0), 0);
     const rango = vioSolucion.size === 0 ? 'Perfect' : vioSolucion.size === 1 ? 'Great' : 'Cleared';
-    const res = await App.api('lesson', { lesson: L.slug });
+    const res = await App.api('lesson', { lesson: L.slug, vidas });
     App.sfx('fin');
     App.confetti(220);
     const siguiente = L.next
@@ -233,12 +282,14 @@
       : '<a class="btn btn-primary btn-lg" href="profile.php">🏆 Ver mis logros</a>';
     cont.innerHTML = `<div class="step-card finish">
       <div class="finish-banner">¡Lección superada!</div>
+      ${INFIERNO ? `<div class="hearts final">${Array.from({ length: VIDAS_MAX }, (_, k) => `<span class="heart ${k < vidas ? '' : 'lost'}">${k < vidas ? '❤️' : '🖤'}</span>`).join('')}${vidas === VIDAS_MAX ? '<b>¡INTOCABLE!</b>' : ''}</div>` : ''}
+      ${L.unlocksInfierno ? '<div class="infierno-unlock"><div class="infierno-logo">INFIERNO</div><b>¡LAS PUERTAS SE ABRIERON!</b><small>9 lecciones sin pistas, sin soluciones y con 3 vidas. XP ×2.</small></div>' : ''}
       ${L.unlocksNgPlus ? '<div class="ngplus-unlock"><div class="ngplus-logo">NEW GAME<span>+</span></div><b>¡DESBLOQUEADO!</b><small>12 lecciones nuevas y un jefe final te esperan</small></div>' : ''}
       <div class="finish-rank rank rank-${rango.toLowerCase()}">${rango}</div>
       <p class="muted">${E(L.title)}</p>
       <div class="finish-stats">
         <div><b>${hechos.size}</b><small>retos resueltos</small></div>
-        <div><b>${res && res.ok ? res.xp_gained + ganado : ganado + 50}</b><small>XP de la lección</small></div>
+        <div><b>${res && res.ok ? res.xp_gained + ganado : ganado + L.bonus}</b><small>XP de la lección</small></div>
         ${res && res.ok ? `<div><b>🔥 ${res.streak}</b><small>días de racha</small></div>` : ''}
       </div>
       ${window.PYAPRENDE.logged ? '' : '<div class="alert alert-info">Crea una cuenta para guardar este progreso 😉</div>'}

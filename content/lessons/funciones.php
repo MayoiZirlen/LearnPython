@@ -91,7 +91,8 @@ PY,
         [
             'type' => 'exercise',
             'title' => '💸 Calculadora de propina',
-            'html' => '<p>Crea <code>calcular_propina(cuenta, porcentaje=15)</code> que devuelva la propina <b>redondeada a 2 decimales</b>. Si no se indica el porcentaje, debe usar 15%.</p><pre>calcular_propina(200)      # 30.0\ncalcular_propina(200, 10)  # 20.0</pre>',
+            'html' => '<p>Crea <code>calcular_propina(cuenta, porcentaje=15)</code> que devuelva la propina <b>redondeada a 2 decimales</b>. Si no se indica el porcentaje, debe usar 15%.</p><pre>calcular_propina(200)      # 30.0
+calcular_propina(200, 10)  # 20.0</pre>',
             'starter' => "def calcular_propina(cuenta, porcentaje=15):\n    pass  # reemplaza esta línea\n\n\nprint(calcular_propina(200))\nprint(calcular_propina(345.50, 10))\n",
             'hint' => ['La propina es <code>cuenta * porcentaje / 100</code>.', '<code>return round(cuenta * porcentaje / 100, 2)</code>'],
             'solution' => "def calcular_propina(cuenta, porcentaje=15):\n    return round(cuenta * porcentaje / 100, 2)\n\n\nprint(calcular_propina(200))\nprint(calcular_propina(345.50, 10))\n",

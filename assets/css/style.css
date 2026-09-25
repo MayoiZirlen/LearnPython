@@ -815,3 +815,98 @@ kbd { font-size: .65em; opacity: .75; border: 1px solid currentColor; padding: 0
 .ngplus-unlock b { font-family: var(--display); font-size: 1.8rem; color: var(--ng2); letter-spacing: .05em; }
 .ngplus-unlock small { color: var(--muted); }
 .dash-unlock { margin: 0; width: auto; }
+
+/* ---------- Nivel Infierno ---------- */
+:root { --hell1: #ff3d00; --hell2: #ffb000; --hell3: #7a0000; }
+.infierno-logo {
+  display: inline-block; font-family: var(--display); font-size: 2.6rem; line-height: 1; letter-spacing: .08em;
+  color: #fff4d6; padding: 2px 18px; transform: skewX(var(--skew)) rotate(-2deg);
+  background: linear-gradient(180deg, #2a0000, #000);
+  border: 2px solid var(--hell1);
+  text-shadow: 0 0 6px #fff, 0 -2px 8px var(--hell2), 0 -6px 16px var(--hell1), 0 -12px 26px #ff0000, 3px 3px 0 #000;
+  box-shadow: 0 0 26px rgba(255, 61, 0, .6), 6px 6px 0 var(--hell3);
+  animation: flicker 2.4s infinite;
+}
+@keyframes flicker {
+  0%, 100% { filter: brightness(1); }
+  42% { filter: brightness(1.25) saturate(1.3); }
+  44% { filter: brightness(.8); }
+  46% { filter: brightness(1.2); }
+  70% { filter: brightness(1.05); }
+}
+.tier-tab.tier-infierno { color: var(--hell2); text-shadow: 0 0 10px var(--hell1); animation: flicker 3s infinite; }
+.tier-tab.tier-infierno.active { background: linear-gradient(180deg, var(--hell2), var(--hell1) 60%, var(--hell3)); color: #fff; box-shadow: 5px 5px 0 #000, 0 0 22px var(--hell1); }
+.infierno-banner {
+  position: relative; overflow: hidden; margin: 4px 0 16px -16px; padding: 16px 18px;
+  background: linear-gradient(0deg, rgba(255, 61, 0, .35), #120000 60%);
+  border: 2px solid var(--hell1); box-shadow: 0 0 24px rgba(255, 61, 0, .4), inset 0 -20px 40px rgba(255, 120, 0, .25);
+}
+.infierno-banner p { margin: 10px 0 0; }
+.infierno-rules { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 0; margin: 12px 0 0; font-family: var(--ui); font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.infierno-rules li { background: #000; border-left: 3px solid var(--hell1); padding: 2px 8px; }
+.song-group.is-infierno .song-row.selected { background: linear-gradient(90deg, var(--hell1) 0%, #8a1200 45%, #1d0200 100%); box-shadow: 0 0 18px rgba(255, 61, 0, .45); }
+.song-group.is-infierno .song-row.selected::before { color: var(--hell2); }
+.song-group.is-ngplus .song-row.selected { background: linear-gradient(90deg, var(--ng1) 0%, #4a1575 45%, #12041f 100%); }
+.star.s-f { color: var(--hell2); text-shadow: 0 0 6px var(--hell1), 0 0 14px #ff0000; animation: starIn .35s backwards, flicker 1.8s infinite; animation-delay: calc(var(--i) * 45ms), calc(var(--i) * 120ms); }
+.detail-panel.is-infierno .detail-card { box-shadow: 8px 8px 0 rgba(255, 61, 0, .7), 0 0 30px rgba(255, 61, 0, .3); }
+.detail-panel.is-infierno .difficulty-label { background: linear-gradient(180deg, var(--hell2), var(--hell1)); color: #000; }
+.detail-panel.is-infierno .difficulty-label::after { content: ' 🔥'; }
+.detail-panel.is-infierno .mascot-big { filter: drop-shadow(4px 0 0 var(--hell2)) drop-shadow(-4px 0 0 var(--hell2)) drop-shadow(0 4px 0 var(--hell1)) drop-shadow(0 -4px 0 var(--hell1)) drop-shadow(0 0 30px #ff2200); }
+.detail-panel.is-infierno .burst { background: radial-gradient(circle, var(--hell2), var(--hell1) 55%, var(--hell3)); }
+
+/* Brasas que suben cuando estás en el Infierno */
+body.en-infierno .bg-fx::before, body:has(.lesson.is-infierno) .bg-fx::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(2px 2px at 10% 90%, var(--hell2), transparent),
+    radial-gradient(3px 3px at 30% 80%, var(--hell1), transparent),
+    radial-gradient(2px 2px at 55% 95%, var(--hell2), transparent),
+    radial-gradient(3px 3px at 75% 85%, var(--hell1), transparent),
+    radial-gradient(2px 2px at 90% 92%, var(--hell2), transparent),
+    radial-gradient(2px 2px at 45% 75%, #fff2b0, transparent);
+  background-size: 100% 100%;
+  animation: embers 6s linear infinite;
+}
+body.en-infierno .bg-fx::after, body:has(.lesson.is-infierno) .bg-fx::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 35vh;
+  background: linear-gradient(0deg, rgba(255, 61, 0, .28), transparent);
+  animation: flicker 3s infinite;
+}
+@keyframes embers { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-70vh); opacity: 0; } }
+.lesson.is-infierno .stage-tag { background: linear-gradient(180deg, var(--hell2), var(--hell1)); color: #000; box-shadow: 3px 3px 0 #000, 0 0 14px var(--hell1); }
+.lesson.is-infierno #lesson-bar { background: repeating-linear-gradient(-45deg, var(--hell1) 0 12px, var(--hell2) 12px 24px); box-shadow: 0 0 12px var(--hell1); }
+.lesson.is-infierno .lesson-title h1 { text-shadow: 0 0 10px var(--hell1), 3px 3px 0 #000; }
+.lesson.is-infierno .step-card { box-shadow: 0 0 0 2px #3a0a00, 10px 10px 0 rgba(255, 61, 0, .45), 0 0 30px rgba(255, 61, 0, .15); }
+
+/* Vidas */
+.hearts { display: flex; gap: 4px; font-size: 1.5rem; filter: drop-shadow(0 0 6px rgba(255, 0, 0, .6)); }
+.heart { display: inline-block; transition: transform .2s; }
+.heart.lost { opacity: .45; filter: grayscale(1); }
+.heart.breaking { animation: heartbreak .6s ease; }
+@keyframes heartbreak { 0% { transform: scale(1.6) rotate(0); } 40% { transform: scale(1.2) rotate(-25deg); } 100% { transform: scale(1) rotate(0); } }
+.hearts.final { justify-content: center; align-items: center; gap: 8px; margin: 18px 0 0; font-size: 2rem; }
+.hearts.final b { font-family: var(--display); color: var(--cyan); font-size: 1.6rem; letter-spacing: .05em; text-shadow: 0 0 12px var(--cyan); }
+body.hurt::after { content: ''; position: fixed; inset: 0; z-index: 90; pointer-events: none; background: radial-gradient(circle, transparent 40%, rgba(255, 0, 0, .55)); animation: hurt .5s ease forwards; }
+body.hurt main { animation: shake .4s; }
+@keyframes hurt { from { opacity: 1; } to { opacity: 0; } }
+
+/* GAME OVER */
+.game-over { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; background: rgba(0, 0, 0, .88); animation: goFade .6s ease; padding: 16px; }
+@keyframes goFade { from { opacity: 0; } }
+.go-box { text-align: center; max-width: 520px; }
+.go-title {
+  font-family: var(--display); font-size: clamp(3.5rem, 14vw, 7rem); line-height: 1; letter-spacing: .06em; color: #ff1a1a;
+  text-shadow: 0 0 20px #ff0000, 5px 5px 0 #000; animation: goDrop .9s cubic-bezier(.3, 1.6, .5, 1);
+}
+@keyframes goDrop { from { transform: translateY(-60vh) rotate(-8deg); } }
+.go-skull { font-size: 4.5rem; margin: 10px 0; animation: bob 2s infinite; }
+.go-lost { color: #ffb3b3; font-weight: 800; }
+
+.infierno-unlock {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 26px auto 4px; padding: 18px 26px; width: fit-content;
+  background: linear-gradient(0deg, rgba(255, 61, 0, .35), #0a0000 70%); border: 2px solid var(--hell1);
+  box-shadow: 0 0 30px rgba(255, 61, 0, .45); animation: stamp .5s .8s cubic-bezier(.2, 1.6, .4, 1) backwards;
+}
+.infierno-unlock b { font-family: var(--display); font-size: 1.8rem; color: var(--hell2); letter-spacing: .05em; text-shadow: 0 0 12px var(--hell1); }
+.infierno-unlock small { color: #ffcfb0; }
+.continue-card.is-infierno { background: linear-gradient(110deg, #000 0 55%, var(--hell1) 55% 100%); box-shadow: 0 0 24px rgba(255, 61, 0, .35); }

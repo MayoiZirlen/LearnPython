@@ -70,7 +70,13 @@ require __DIR__ . '/includes/header.php';
       <b>¡Desbloqueado!</b><small>Terminaste el juego principal. 12 lecciones nuevas y un jefe final te esperan.</small>
     </div>
   <?php endif; ?>
-  <div class="card continue-card <?= !empty($nextModule['ngplus']) ? 'is-ngplus' : '' ?>" style="--mod: <?= e($nextModule['color']) ?>">
+  <?php if (infierno_unlocked($done) && !array_intersect(infierno_lessons(), $done)): ?>
+    <div class="infierno-unlock dash-unlock">
+      <div class="infierno-logo">INFIERNO</div>
+      <b>¡Las puertas se abrieron!</b><small>Sin pistas, sin soluciones, 3 vidas por lección y XP ×2. ¿Te atreves? 😈</small>
+    </div>
+  <?php endif; ?>
+  <div class="card continue-card is-<?= e(module_mode($nextModule)) ?>" style="--mod: <?= e($nextModule['color']) ?>">
     <div>
       <div class="muted small"><?= count($done) ? 'Continúa donde te quedaste' : 'Tu aventura empieza aquí' ?> · <?= e($nextModule['title']) ?></div>
       <h2><?= e($nextModule['icon'] . ' ' . $next['title']) ?></h2>

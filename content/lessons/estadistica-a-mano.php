@@ -67,7 +67,8 @@ PY,
         [
             'type' => 'exercise',
             'title' => '📊 Mini reporte estadístico',
-            'html' => '<p>Crea la función <code>resumen(datos)</code> que devuelva un <b>diccionario</b> con las claves <code>"min"</code>, <code>"max"</code>, <code>"rango"</code> y <code>"media"</code> (redondeada a 2 decimales).</p><pre>resumen([2, 3, 3, 5, 12])\n# {"min": 2, "max": 12, "rango": 10, "media": 5.0}</pre>',
+            'html' => '<p>Crea la función <code>resumen(datos)</code> que devuelva un <b>diccionario</b> con las claves <code>"min"</code>, <code>"max"</code>, <code>"rango"</code> y <code>"media"</code> (redondeada a 2 decimales).</p><pre>resumen([2, 3, 3, 5, 12])
+# {"min": 2, "max": 12, "rango": 10, "media": 5.0}</pre>',
             'starter' => "def resumen(datos):\n    return {\n        \"min\": min(datos),\n        # completa las demás claves\n    }\n\n\nprint(resumen([2, 3, 3, 5, 12]))\n",
             'hint' => ['El rango es <code>max(datos) - min(datos)</code>.', 'La media redondeada: <code>round(sum(datos) / len(datos), 2)</code>'],
             'solution' => "def resumen(datos):\n    return {\n        \"min\": min(datos),\n        \"max\": max(datos),\n        \"rango\": max(datos) - min(datos),\n        \"media\": round(sum(datos) / len(datos), 2),\n    }\n\n\nprint(resumen([2, 3, 3, 5, 12]))\n",

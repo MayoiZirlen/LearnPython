@@ -74,4 +74,23 @@ return [
         'description' => 'Atípicos, correlación, regresión y el Jefe Final NG+.',
         'lessons' => ['ngp-atipicos', 'ngp-regresion', 'ngp-jefe-final'],
     ],
+    // ===================== INFIERNO =====================
+    [
+        'slug' => 'inf-algoritmos', 'tier' => 'infierno', 'modo' => 'infierno', 'icon' => '🔥', 'color' => '#ff3d00',
+        'title' => 'Círculo I · Algoritmos malditos',
+        'description' => 'Generadores, clases y eficiencia: código que no se rompe ni se arrastra.',
+        'lessons' => ['inf-generadores', 'inf-clases', 'inf-algoritmos'],
+    ],
+    [
+        'slug' => 'inf-pandas', 'tier' => 'infierno', 'modo' => 'infierno', 'icon' => '😈', 'color' => '#ff6a00',
+        'title' => 'Círculo II · pandas demoníaco',
+        'description' => 'transform, rankings, ventanas por grupo y vectorización extrema.',
+        'lessons' => ['inf-transform', 'inf-ventanas', 'inf-vectorizar'],
+    ],
+    [
+        'slug' => 'inf-abismo', 'tier' => 'infierno', 'modo' => 'infierno', 'icon' => '💀', 'color' => '#b91c1c', 'achievement' => 'mod_infierno',
+        'title' => 'Círculo III · El abismo',
+        'description' => 'Pruebas de hipótesis, clasificación y el Jefe Final: Lucifer.',
+        'lessons' => ['inf-hipotesis', 'inf-clasificacion', 'inf-lucifer'],
+    ],
 ];

@@ -13,6 +13,8 @@ const LEVELS = [
     [3200, 'Leyenda de los datos', '🐉'],
     [4200, 'Maestro New Game+',    '👑'],
     [5200, 'Deidad de los datos',  '🌌'],
+    [6800, 'Demonio de los datos', '😈'],
+    [8500, 'Señor del Infierno',   '🔥'],
 ];
 
 function level_info(int $xp): array
@@ -55,7 +57,11 @@ function achievements(): array
         'mod_proyecto'     => ['🏆', 'Analista graduado', 'Terminaste el proyecto final.'],
         'ngplus_inicio'    => ['🌀', 'New Game Plus', 'Completaste tu primera lección del New Game Plus.'],
         'mod_ngplus'       => ['👹', 'Jefe NG+ derrotado', 'Terminaste el Jefe Final del New Game Plus.'],
-        'platino'          => ['💠', 'Trofeo de platino', 'Completaste TODAS las lecciones, incluido el New Game Plus.'],
+        'platino'          => ['💠', 'Trofeo de platino', 'Completaste el juego principal y todo el New Game Plus.'],
+        'infierno_inicio'  => ['🔥', 'Bienvenido al Infierno', 'Sobreviviste a tu primera lección del Infierno.'],
+        'primera_muerte'   => ['☠️', 'Game Over', 'Perdiste todas tus vidas en el Infierno. Le pasa a los mejores.'],
+        'intocable'        => ['💎', 'Intocable', 'Terminaste una lección del Infierno sin perder ni una vida.'],
+        'mod_infierno'     => ['👑', 'Rey del Infierno', 'Derrotaste a Lucifer, el jefe final del Infierno.'],
     ];
 }
 
@@ -107,7 +113,7 @@ function touch_streak(int $userId): void
  * Revisa qué logros se cumplen y desbloquea los nuevos.
  * Devuelve la lista de logros recién ganados (para celebrarlos en pantalla).
  */
-function check_achievements(int $userId): array
+function check_achievements(int $userId, array $extra = []): array
 {
     $have = user_achievements($userId);
     $st = db()->prepare('SELECT xp, streak FROM users WHERE id = ?');
@@ -128,7 +134,8 @@ function check_achievements(int $userId): array
         'racha_7' => $u['streak'] >= 7,
         'xp_1000' => $u['xp'] >= 1000,
         'ngplus_inicio' => (bool) array_intersect(ngplus_lessons(), $done),
-        'platino' => !array_diff(lesson_order(), $done),
+        'platino' => !array_diff(array_merge(main_lessons(), ngplus_lessons()), $done),
+        'infierno_inicio' => (bool) array_intersect(infierno_lessons(), $done),
     ];
     foreach (course() as $m) {
         if (!empty($m['achievement'])) {
@@ -136,6 +143,9 @@ function check_achievements(int $userId): array
         }
     }
 
+    foreach ($extra as $code) {
+        $earned[$code] = true;
+    }
     $all = achievements();
     $new = [];
     $ins = db()->prepare('INSERT IGNORE INTO user_achievements (user_id, code) VALUES (?, ?)');
