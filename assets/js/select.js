@@ -38,10 +38,11 @@
     $('d-xp').textContent = d.xp;
     $('d-steps').textContent = d.steps;
     $('d-stars').innerHTML = Array.from({ length: 9 }, (_, i) => {
-      const nivel = i < 3 ? 'y' : i < 6 ? 'o' : 'r';
+      const nivel = d.ngplus ? 'p' : i < 3 ? 'y' : i < 6 ? 'o' : 'r';
       return `<span class="star ${i < d.stars ? 'on s-' + nivel : ''}" style="--i:${i}">★</span>`;
     }).join('');
     document.getElementById('detail').style.setProperty('--mod', d.color);
+    document.getElementById('detail').classList.toggle('is-ngplus', !!d.ngplus);
     const icono = $('d-icon');
     icono.classList.remove('pop'); void icono.offsetWidth; icono.classList.add('pop');
     $('btn-go').href = fila.href;

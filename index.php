@@ -64,7 +64,13 @@ require __DIR__ . '/includes/header.php';
     </div>
   </div>
 
-  <div class="card continue-card" style="--mod: <?= e($nextModule['color']) ?>">
+  <?php if (ngplus_unlocked($done) && !array_intersect(ngplus_lessons(), $done)): ?>
+    <div class="ngplus-unlock dash-unlock">
+      <div class="ngplus-logo">NEW GAME<span>+</span></div>
+      <b>¡Desbloqueado!</b><small>Terminaste el juego principal. 12 lecciones nuevas y un jefe final te esperan.</small>
+    </div>
+  <?php endif; ?>
+  <div class="card continue-card <?= !empty($nextModule['ngplus']) ? 'is-ngplus' : '' ?>" style="--mod: <?= e($nextModule['color']) ?>">
     <div>
       <div class="muted small"><?= count($done) ? 'Continúa donde te quedaste' : 'Tu aventura empieza aquí' ?> · <?= e($nextModule['title']) ?></div>
       <h2><?= e($nextModule['icon'] . ' ' . $next['title']) ?></h2>

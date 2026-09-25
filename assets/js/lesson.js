@@ -233,6 +233,7 @@
       : '<a class="btn btn-primary btn-lg" href="profile.php">🏆 Ver mis logros</a>';
     cont.innerHTML = `<div class="step-card finish">
       <div class="finish-banner">¡Lección superada!</div>
+      ${L.unlocksNgPlus ? '<div class="ngplus-unlock"><div class="ngplus-logo">NEW GAME<span>+</span></div><b>¡DESBLOQUEADO!</b><small>12 lecciones nuevas y un jefe final te esperan</small></div>' : ''}
       <div class="finish-rank rank rank-${rango.toLowerCase()}">${rango}</div>
       <p class="muted">${E(L.title)}</p>
       <div class="finish-stats">

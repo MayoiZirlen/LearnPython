@@ -49,4 +49,29 @@ return [
         'description' => 'Analiza las ventas de una tienda de principio a fin.',
         'lessons' => ['proyecto-ventas'],
     ],
+    // ===================== NEW GAME PLUS =====================
+    [
+        'slug' => 'ngp-python', 'tier' => 'ngplus', 'ngplus' => true, 'icon' => '🌀', 'color' => '#a34dff',
+        'title' => 'Python pro',
+        'description' => 'Comprensiones, manejo de errores, lambda y apply.',
+        'lessons' => ['ngp-comprensiones', 'ngp-errores', 'ngp-lambda'],
+    ],
+    [
+        'slug' => 'ngp-pandas', 'tier' => 'ngplus', 'ngplus' => true, 'icon' => '⚡', 'color' => '#d946ef',
+        'title' => 'pandas avanzado',
+        'description' => 'Unir tablas, series de tiempo, regex y melt/pivot.',
+        'lessons' => ['ngp-merge', 'ngp-tiempo', 'ngp-texto', 'ngp-reshape'],
+    ],
+    [
+        'slug' => 'ngp-excel', 'tier' => 'ngplus', 'ngplus' => true, 'icon' => '📗', 'color' => '#10b981',
+        'title' => 'Excel pro',
+        'description' => 'Libros de varias hojas, formato, colores y fórmulas con openpyxl.',
+        'lessons' => ['ngp-excel', 'ngp-openpyxl'],
+    ],
+    [
+        'slug' => 'ngp-estadistica', 'tier' => 'ngplus', 'ngplus' => true, 'icon' => '🔮', 'color' => '#f59e0b', 'achievement' => 'mod_ngplus',
+        'title' => 'Estadística y predicción',
+        'description' => 'Atípicos, correlación, regresión y el Jefe Final NG+.',
+        'lessons' => ['ngp-atipicos', 'ngp-regresion', 'ngp-jefe-final'],
+    ],
 ];

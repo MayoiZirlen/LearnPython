@@ -26,6 +26,7 @@ $payload = [
     'lessonDone' => $lessonDone,
     'next' => $next,
     'nextTitle' => $next ? load_lesson($next)['title'] : null,
+    'unlocksNgPlus' => $next && is_ngplus($next) && !is_ngplus($slug),
 ];
 
 $pageTitle = $lesson['title'];
@@ -35,7 +36,7 @@ $mainClass = 'lesson-main';
 $extraScripts = ['assets/js/lesson.js'];
 require __DIR__ . '/includes/header.php';
 ?>
-<div class="lesson" style="--mod: <?= e($module['color']) ?>">
+<div class="lesson <?= !empty($module['ngplus']) ? 'is-ngplus' : '' ?>" style="--mod: <?= e($module['color']) ?>">
   <div class="lesson-top">
     <a class="close" href="learn.php" title="Volver al mapa">✕</a>
     <div class="lesson-progress"><div id="lesson-bar"></div></div>

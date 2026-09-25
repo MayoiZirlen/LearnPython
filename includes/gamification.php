@@ -10,6 +10,9 @@ const LEVELS = [
     [1200, 'Pandas padawan',       '🐼'],
     [1700, 'Analista de datos',    '📊'],
     [2300, 'Mago de los datos',    '🧙'],
+    [3200, 'Leyenda de los datos', '🐉'],
+    [4200, 'Maestro New Game+',    '👑'],
+    [5200, 'Deidad de los datos',  '🌌'],
 ];
 
 function level_info(int $xp): array
@@ -50,6 +53,9 @@ function achievements(): array
         'mod_pandas'       => ['🐼', 'Amigo de los pandas', 'Terminaste el módulo de pandas.'],
         'mod_graficos'     => ['🎨', 'Pintor de datos', 'Terminaste el módulo de visualización.'],
         'mod_proyecto'     => ['🏆', 'Analista graduado', 'Terminaste el proyecto final.'],
+        'ngplus_inicio'    => ['🌀', 'New Game Plus', 'Completaste tu primera lección del New Game Plus.'],
+        'mod_ngplus'       => ['👹', 'Jefe NG+ derrotado', 'Terminaste el Jefe Final del New Game Plus.'],
+        'platino'          => ['💠', 'Trofeo de platino', 'Completaste TODAS las lecciones, incluido el New Game Plus.'],
     ];
 }
 
@@ -121,6 +127,8 @@ function check_achievements(int $userId): array
         'racha_3' => $u['streak'] >= 3,
         'racha_7' => $u['streak'] >= 7,
         'xp_1000' => $u['xp'] >= 1000,
+        'ngplus_inicio' => (bool) array_intersect(ngplus_lessons(), $done),
+        'platino' => !array_diff(lesson_order(), $done),
     ];
     foreach (course() as $m) {
         if (!empty($m['achievement'])) {

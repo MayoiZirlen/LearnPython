@@ -6,6 +6,8 @@ $done = $user ? completed_lessons((int) $user['id']) : [];
 $ranks = $user ? lesson_ranks((int) $user['id']) : [];
 $current = recommended_lesson($done);
 $currentTier = module_of($current)['tier'];
+$ngUnlocked = ngplus_unlocked($done);
+$mainDone = count(array_intersect(main_lessons(), $done));
 
 // Datos de cada lección para el panel de detalle.
 $details = [];
@@ -24,6 +26,7 @@ foreach (course() as $m) {
             'steps' => count($l['steps']),
             'stars' => lesson_difficulty($slug),
             'rank' => $ranks[$slug] ?? null,
+            'ngplus' => !empty($m['ngplus']),
         ];
     }
 }
@@ -40,7 +43,7 @@ require __DIR__ . '/includes/header.php';
     <div class="clock" id="clock">00:00</div>
     <div class="tier-tabs" role="tablist">
       <?php foreach (TIERS as $key => $label): ?>
-        <button class="tier-tab <?= $key === $currentTier ? 'active' : '' ?>" data-tier="<?= $key ?>" role="tab"><?= e($label) ?></button>
+        <button class="tier-tab <?= $key === $currentTier ? 'active' : '' ?> <?= $key === 'ngplus' ? 'tier-ngplus' : '' ?>" data-tier="<?= $key ?>" role="tab"><?= $key === 'ngplus' && !$ngUnlocked ? '🔒 ' : '' ?><?= e($label) ?></button>
       <?php endforeach; ?>
     </div>
   </div>
@@ -51,9 +54,19 @@ require __DIR__ . '/includes/header.php';
 
   <div class="select-body">
     <div class="song-list" id="song-list">
-      <?php foreach (course() as $mi => $m): ?>
-        <div class="song-group" data-tier="<?= e($m['tier']) ?>" style="--mod: <?= e($m['color']) ?>">
-          <div class="song-group-title"><span><?= $m['icon'] ?> Módulo <?= $mi + 1 ?></span> <?= e($m['title']) ?></div>
+      <?php $ngBanner = false; foreach (course() as $mi => $m): ?>
+        <div class="song-group <?= !empty($m['ngplus']) ? 'is-ngplus' : '' ?>" data-tier="<?= e($m['tier']) ?>" style="--mod: <?= e($m['color']) ?>">
+          <?php if (!empty($m['ngplus']) && !$ngBanner): $ngBanner = true; ?>
+            <div class="ngplus-banner">
+              <div class="ngplus-logo">NEW GAME<span>+</span></div>
+              <?php if ($ngUnlocked): ?>
+                <p>🔓 <b>¡Desbloqueado!</b> Terminaste el juego principal. Ahora los enemigos son más fuertes… y tú también.</p>
+              <?php else: ?>
+                <p>🔒 Se desbloquea al terminar el juego principal (<b><?= $mainDone ?>/<?= count(main_lessons()) ?></b> lecciones). Puedes entrar de todos modos, pero ¡la dificultad sube mucho! 😈</p>
+              <?php endif; ?>
+            </div>
+          <?php endif; ?>
+          <div class="song-group-title"><span><?= $m['icon'] ?> Módulo <?= e(module_number($m)) ?></span> <?= e($m['title']) ?></div>
           <?php foreach ($m['lessons'] as $slug): $d = $details[$slug];
               $isNew = !isset($ranks[$slug]) && $slug === $current;
           ?>

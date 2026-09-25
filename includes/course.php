@@ -110,12 +110,37 @@ const TIERS = [
     'normal' => 'Normal',
     'dificil' => 'Difícil',
     'experto' => 'Experto',
+    'ngplus' => 'NG+',
 ];
+
+/** ¿La lección pertenece al New Game Plus? */
+function is_ngplus(string $slug): bool
+{
+    return !empty(module_of($slug)['ngplus']);
+}
+
+/** Lecciones del juego principal (sin NG+). */
+function main_lessons(): array
+{
+    return array_values(array_filter(lesson_order(), fn($s) => !is_ngplus($s)));
+}
+
+function ngplus_lessons(): array
+{
+    return array_values(array_filter(lesson_order(), 'is_ngplus'));
+}
+
+/** El New Game Plus se "desbloquea" al terminar todo el juego principal. */
+function ngplus_unlocked(array $done): bool
+{
+    return !array_diff(main_lessons(), $done);
+}
 
 /** Dificultad de 1 a 9 estrellas según la posición de la lección en el curso. */
 function lesson_difficulty(string $slug): int
 {
-    $order = lesson_order();
+    // El juego principal y el NG+ tienen cada uno su propia escala de 1 a 9 estrellas.
+    $order = is_ngplus($slug) ? ngplus_lessons() : main_lessons();
     $i = array_search($slug, $order, true);
     return 1 + (int) floor(($i ?: 0) * 8 / max(1, count($order) - 1));
 }
@@ -123,10 +148,29 @@ function lesson_difficulty(string $slug): int
 /** Número de "nivel" estilo videojuego: módulo-lección (ej. 2-1). */
 function stage_label(string $slug): string
 {
-    foreach (course() as $mi => $m) {
+    $main = 0;
+    $plus = 0;
+    foreach (course() as $m) {
+        $ng = !empty($m['ngplus']);
+        $n = $ng ? ++$plus : ++$main;
         $li = array_search($slug, $m['lessons'], true);
         if ($li !== false) {
-            return ($mi + 1) . '-' . ($li + 1);
+            return ($ng ? 'NG+ ' : '') . $n . '-' . ($li + 1);
+        }
+    }
+    return '?';
+}
+
+/** Número de módulo para mostrar (el NG+ reinicia la cuenta). */
+function module_number(array $module): string
+{
+    $main = 0;
+    $plus = 0;
+    foreach (course() as $m) {
+        $ng = !empty($m['ngplus']);
+        $n = $ng ? ++$plus : ++$main;
+        if ($m['slug'] === $module['slug']) {
+            return ($ng ? 'NG+ ' : '') . $n;
         }
     }
     return '?';

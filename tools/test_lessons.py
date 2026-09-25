@@ -22,6 +22,7 @@ os.environ.setdefault("MPLBACKEND", "agg")
 import harness  # noqa: E402
 
 os.chdir(os.path.join(RAIZ, "data"))
+ORIGINALES = set(os.listdir("."))
 
 php = os.environ.get("PHP", "php")
 lecciones = json.loads(subprocess.check_output([php, os.path.join(RAIZ, "tools", "export_content.php")]))
@@ -68,6 +69,10 @@ if not filtro:
         if os.path.exists(generado):
             os.remove(generado)
     print("✔ caja de herramientas del laboratorio")
+
+# Borramos los archivos que crearon los ejercicios (reportes de Excel, etc.)
+for generado in set(os.listdir(".")) - ORIGINALES:
+    os.remove(generado)
 
 print(f"\n{fallos} fallos, {avisos} avisos")
 sys.exit(1 if fallos else 0)

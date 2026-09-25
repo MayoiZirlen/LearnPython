@@ -64,10 +64,17 @@ const App = {
       App.toast(`${res.level.icon} ¡Subiste al nivel ${res.level.number}: ${res.level.name}!`, 'level', 5000);
       App.confetti(160);
     }
-    (res.achievements || []).forEach((a, i) => setTimeout(() => {
-      App.toast(`<span class="toast-icon">${a.icon}</span><div><b>¡Logro desbloqueado!</b><br>${a.title}: ${a.desc}</div>`, 'achievement', 6000);
-      App.confetti(80);
-    }, 600 * i));
+    const logros = res.achievements || [];
+    if (logros.length > 3) {
+      // Muchos logros a la vez (por ejemplo al desbloquear el NG+): una sola notificación.
+      App.toast(`<span class="toast-icon">🏅</span><div><b>¡${logros.length} logros desbloqueados!</b><br>${logros.map((a) => `${a.icon} ${a.title}`).join('<br>')}</div>`, 'achievement', 8000);
+      App.confetti(160);
+    } else {
+      logros.forEach((a, i) => setTimeout(() => {
+        App.toast(`<span class="toast-icon">${a.icon}</span><div><b>¡Logro desbloqueado!</b><br>${a.title}: ${a.desc}</div>`, 'achievement', 6000);
+        App.confetti(80);
+      }, 600 * i));
+    }
   },
 
   toast(html, type = 'info', ms = 3500) {

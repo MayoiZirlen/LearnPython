@@ -780,3 +780,38 @@ kbd { font-size: .65em; opacity: .75; border: 1px solid currentColor; padding: 0
   .wz-source .btn { margin-left: 0; }
   .mode-tab { font-size: 1.05rem; padding: 4px 12px; }
 }
+
+/* ---------- New Game Plus ---------- */
+:root { --ng1: #a34dff; --ng2: #ffd21f; }
+.ngplus-logo {
+  display: inline-block; font-family: var(--display); font-size: 2.2rem; line-height: 1; letter-spacing: .04em;
+  color: #fff; padding: 4px 16px; transform: skewX(var(--skew)) rotate(-2deg);
+  background: linear-gradient(100deg, #2a0a4a, var(--ng1) 55%, #ff4fd8);
+  box-shadow: 6px 6px 0 var(--ng2), 0 0 24px rgba(163, 77, 255, .6);
+  text-shadow: 3px 3px 0 #000;
+}
+.ngplus-logo span { color: var(--ng2); font-size: 1.3em; margin-left: 2px; text-shadow: 0 0 14px var(--ng2), 3px 3px 0 #000; }
+.tier-tab.tier-ngplus { color: var(--ng2); text-shadow: 0 0 10px rgba(255, 210, 31, .7); }
+.tier-tab.tier-ngplus.active { background: linear-gradient(100deg, var(--ng1), #ff4fd8); color: #fff; box-shadow: 5px 5px 0 var(--ng2); }
+.ngplus-banner {
+  margin: 4px 0 16px -16px; padding: 14px 18px; background: linear-gradient(120deg, #1a0630, #0a0a0a 70%);
+  border: 2px solid var(--ng1); box-shadow: 0 0 22px rgba(163, 77, 255, .35);
+}
+.ngplus-banner p { margin: 12px 0 0; }
+.song-group.is-ngplus .song-row.selected { background: linear-gradient(90deg, var(--ng1) 0%, #4a1575 45%, #12041f 100%); }
+.song-group.is-ngplus .song-row.selected::before { color: var(--ng2); }
+.star.s-p { color: var(--ng1); text-shadow: 0 0 12px rgba(163, 77, 255, .9), 0 0 2px #fff; }
+.detail-panel.is-ngplus .detail-card { box-shadow: 8px 8px 0 rgba(163, 77, 255, .6); }
+.detail-panel.is-ngplus .difficulty-label::after { content: ' +'; color: var(--ng1); }
+.detail-panel.is-ngplus .mascot-big { filter: drop-shadow(4px 0 0 var(--ng2)) drop-shadow(-4px 0 0 var(--ng2)) drop-shadow(0 4px 0 var(--ng2)) drop-shadow(0 -4px 0 var(--ng2)) drop-shadow(0 0 26px rgba(163, 77, 255, .9)); }
+.lesson.is-ngplus .stage-tag { background: linear-gradient(100deg, var(--ng1), #ff4fd8); color: #fff; box-shadow: 3px 3px 0 var(--ng2); }
+.lesson.is-ngplus #lesson-bar { background: repeating-linear-gradient(-45deg, var(--ng1) 0 12px, #c47dff 12px 24px); }
+.continue-card.is-ngplus { background: linear-gradient(110deg, #000 0 55%, var(--ng1) 55% 100%); }
+.ngplus-unlock {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 26px auto 4px; padding: 18px 26px; width: fit-content;
+  background: radial-gradient(circle at 50% 0, rgba(163, 77, 255, .35), transparent 70%), #0a0a0a;
+  border: 2px solid var(--ng1); animation: stamp .5s .8s cubic-bezier(.2, 1.6, .4, 1) backwards;
+}
+.ngplus-unlock b { font-family: var(--display); font-size: 1.8rem; color: var(--ng2); letter-spacing: .05em; }
+.ngplus-unlock small { color: var(--muted); }
+.dash-unlock { margin: 0; width: auto; }

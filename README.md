@@ -4,6 +4,9 @@ Plataforma web para **aprender Python desde cero** de forma divertida, con enfoq
 Pensada para personas sin ningún conocimiento previo de programación.
 
 - 🧩 **21 micro-lecciones en 8 módulos**: de `print()` a pandas, gráficos y un proyecto final.
+- 🌀 **New Game Plus**: 12 lecciones avanzadas en 4 módulos más (Python pro, pandas avanzado, Excel pro
+  con openpyxl y estadística/predicción con scikit-learn) que se desbloquean al terminar el juego principal,
+  con su propio Jefe Final y el Trofeo de Platino.
 - 💻 **Python corre en el navegador** gracias a [Pyodide](https://pyodide.org) (WebAssembly). No hay que instalar Python.
 - ✅ **Ejercicios que se corrigen solos**, con pistas, solución y errores explicados en español.
 - 🎮 **Gamificación**: XP, 8 niveles, rachas diarias, 14 logros, ranking, confeti y sonidos.
@@ -30,6 +33,10 @@ Pensada para personas sin ningún conocimiento previo de programación.
 | 6 | 🐼 pandas | DataFrames, Leer CSV, Filtrar, groupby, Limpieza de datos |
 | 7 | 📈 Visualización | matplotlib, Gráficos desde pandas |
 | 8 | 🏆 Proyecto final | Reporte anual de ventas de "TiendaPy" |
+| NG+ 1 | 🌀 Python pro | Comprensiones, try/except, lambda / apply / map |
+| NG+ 2 | ⚡ pandas avanzado | merge, series de tiempo (resample, rolling), texto y regex, melt / pivot |
+| NG+ 3 | 📗 Excel pro | Libros de varias hojas con pandas, openpyxl (formato, fórmulas, colores) |
+| NG+ 4 | 🔮 Estadística y predicción | Atípicos (IQR, z-score), correlación, regresión con scikit-learn, 👹 Jefe Final NG+ |
 
 ## Instalación con XAMPP
 

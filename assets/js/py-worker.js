@@ -68,7 +68,7 @@ async function correr({ id, codigo, check, entradas, antes, despues }) {
   await listo;
   const todo = codigo + '\n' + (check || '');
   const paquetes = paquetesExtra(codigo);
-  const ruedas = Object.values(RUEDAS).some((r) => r.cuando.test(codigo));
+  const ruedas = Object.values(RUEDAS).some((r) => r.cuando.test(todo));
   if (paquetes.length || ruedas || /\bimport\b/.test(todo)) {
     postMessage({ tipo: 'estado', id, texto: 'Cargando librerías (solo la primera vez)…' });
     // Si algo no se puede descargar seguimos: el error aparecerá al importar, explicado en español.
@@ -76,7 +76,7 @@ async function correr({ id, codigo, check, entradas, antes, despues }) {
       try { await pyodide.loadPackage(p); } catch (e) { /* paquete no disponible */ }
     }
     try { await pyodide.loadPackagesFromImports(todo); } catch (e) { /* sin conexión */ }
-    try { await instalarRuedas(codigo); } catch (e) { console.error('No se pudo instalar una librería', String(e).slice(-700)); }
+    try { await instalarRuedas(todo); } catch (e) { console.error('No se pudo instalar una librería', String(e).slice(-700)); }
     const precargar = pyodide.globals.get('harness').precargar;
     try { precargar(codigo); } catch (e) { /* si falla, el error se verá al ejecutar */ }
     precargar.destroy();
