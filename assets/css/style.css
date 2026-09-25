@@ -651,3 +651,53 @@ kbd { font-size: .65em; opacity: .75; border: 1px solid currentColor; padding: 0
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- Laboratorio de datos (archivos + herramientas) ---------- */
+.lab-main { max-width: 1320px; }
+.lab { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 24px; margin-top: 18px; align-items: start; }
+.lab-side { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 84px; max-height: calc(100vh - 100px); overflow-y: auto; scrollbar-color: #555 #000; padding-right: 4px; }
+.lab-panel { background: rgba(0, 0, 0, .75); border: 2px solid #222; border-left: 5px solid var(--red); padding: 14px; }
+.lab-panel-title { display: inline-block; font-family: var(--display); font-size: 1.35rem; text-transform: uppercase; letter-spacing: .03em; margin: 0 0 10px; }
+.dropzone {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; cursor: pointer;
+  padding: 18px 10px; border: 3px dashed #555; background: #0c0c0c; transition: border-color .15s, background .15s, transform .15s;
+}
+.dropzone:hover, .dropzone.over { border-color: var(--red); background: #1f0405; transform: rotate(-1deg) scale(1.02); }
+.dropzone b { font-family: var(--ui); font-weight: 800; font-size: 1.2rem; letter-spacing: .04em; text-transform: uppercase; }
+.dropzone small { color: var(--muted); }
+.dz-icon { font-size: 2rem; }
+.file-list { list-style: none; margin: 12px 0 8px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.file { display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: #151515; border-left: 3px solid #444; }
+.file.mine { border-left-color: var(--yellow); background: linear-gradient(90deg, #2a2205, #151515); }
+.file-icon { font-size: 1.3rem; }
+.file-name { flex: 1; min-width: 0; font-weight: 700; font-size: .95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-name small { display: block; color: var(--muted); font-weight: 400; font-size: .78rem; }
+.file-actions { display: flex; gap: 2px; }
+.file-actions button { background: #000; border: 1px solid #333; cursor: pointer; font-size: .95rem; padding: 3px 5px; }
+.file-actions button:hover { background: var(--red); border-color: #fff; }
+.toolbox { display: flex; flex-direction: column; gap: 6px; }
+.tool-group summary {
+  cursor: pointer; font-family: var(--ui); font-weight: 800; font-size: 1.1rem; letter-spacing: .04em; text-transform: uppercase;
+  padding: 4px 8px; background: #1b1b1b; list-style: none;
+}
+.tool-group summary::-webkit-details-marker { display: none; }
+.tool-group summary::after { content: '▸'; float: right; color: var(--red); transition: transform .15s; }
+.tool-group[open] summary::after { transform: rotate(90deg); }
+.tool {
+  display: block; width: calc(100% - 12px); margin: 6px 0 0 12px; text-align: left; cursor: pointer;
+  font: inherit; font-weight: 700; font-size: .95rem; color: #ddd;
+  background: #0d0d0d; border: 1px solid #2a2a2a; padding: 7px 10px; transition: transform .1s, background .1s;
+}
+.tool:hover { background: linear-gradient(90deg, var(--red), #3a0506); color: #fff; transform: translateX(4px); }
+.tool.on { border-color: var(--yellow); box-shadow: inset 4px 0 0 var(--yellow); }
+.libs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.libs span { font-family: 'JetBrains Mono', monospace; font-size: .75rem; background: #000; border: 1px solid #333; color: var(--cyan); padding: 1px 6px; }
+.lab-main-col { margin-top: 0; }
+.lab-editor-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.lab .CodeMirror { min-height: 300px; }
+.lab-output { display: block; min-height: 260px; }
+@media (max-width: 960px) {
+  .lab { grid-template-columns: minmax(0, 1fr); }
+  .lab-side { position: static; max-height: none; min-width: 0; overflow: visible; padding-right: 0; }
+  .lab-editor-head .muted { display: none; }
+}

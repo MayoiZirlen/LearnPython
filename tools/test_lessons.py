@@ -8,7 +8,7 @@ Para cada lección verifica que:
   * los quizzes tienen una respuesta válida.
 
 Uso (desde la carpeta del proyecto):
-    python tools/test_lessons.py            # requiere numpy, pandas y matplotlib
+    python tools/test_lessons.py            # requiere numpy, pandas, matplotlib, openpyxl, scipy, scikit-learn y seaborn
     python tools/test_lessons.py pandas-csv # solo una lección
 """
 import json
@@ -54,6 +54,20 @@ for lec in lecciones:
                 fallos += 1
                 print(f"❌ {donde}: respuesta fuera de rango")
     print(f"✔ {lec['slug']}")
+
+# Caja de herramientas del laboratorio (content/lab_tools.php)
+if not filtro:
+    herramientas = json.loads(subprocess.check_output([php, "-r", "echo json_encode(require $argv[1]);", os.path.join(RAIZ, "content", "lab_tools.php")]))
+    for grupo, items in herramientas.items():
+        for nombre, codigo in items.items():
+            r = harness.ejecutar(codigo)
+            if r["error"]:
+                fallos += 1
+                print(f"❌ laboratorio / {nombre}: {r['error']}")
+    for generado in ("reporte.xlsx", "ventas_grandes.csv"):
+        if os.path.exists(generado):
+            os.remove(generado)
+    print("✔ caja de herramientas del laboratorio")
 
 print(f"\n{fallos} fallos, {avisos} avisos")
 sys.exit(1 if fallos else 0)

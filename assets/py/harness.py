@@ -76,7 +76,7 @@ def _figuras_a_png():
     return imagenes
 
 
-_USA_GRAFICOS = re.compile(r"matplotlib|\.(plot|hist|boxplot)\s*\(")
+_USA_GRAFICOS = re.compile(r"matplotlib|seaborn|sns\.|\.(plot|hist|boxplot)\s*\(")
 
 
 def precargar(codigo):

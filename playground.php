@@ -1,34 +1,62 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
 
-$snippets = [
-    'Hola mundo' => "print(\"¡Hola, mundo! 🌎\")\n",
-    'Explorar ventas' => "import pandas as pd\n\nventas = pd.read_csv(\"ventas.csv\")\nprint(ventas.shape)\nventas.head()\n",
-    'Ventas por región' => "import pandas as pd\n\nventas = pd.read_csv(\"ventas.csv\")\nventas[\"total\"] = ventas[\"unidades\"] * ventas[\"precio_unitario\"]\nventas.groupby(\"region\")[\"total\"].sum().sort_values(ascending=False)\n",
-    'Gráfico de clima' => "import pandas as pd\nimport matplotlib.pyplot as plt\n\nclima = pd.read_csv(\"clima.csv\")\nfor ciudad, datos in clima.groupby(\"ciudad\"):\n    plt.plot(datos[\"num_mes\"], datos[\"temperatura\"], marker=\"o\", label=ciudad)\n\nplt.title(\"Temperatura promedio por mes\")\nplt.xlabel(\"Mes\")\nplt.ylabel(\"°C\")\nplt.legend()\nplt.show()\n",
-    'Usar input()' => "nombre = input(\"¿Cómo te llamas? \")\nedad = int(input(\"¿Cuántos años tienes? \"))\nprint(f\"{nombre}, en 2050 tendrás {edad + 2050 - 2026} años\")\n",
-];
+$tools = require __DIR__ . '/content/lab_tools.php';
+$inicial = $tools['📥 Leer datos']['Leer Excel (todas las hojas)'];
 
 $pageTitle = 'Laboratorio';
 $page = 'playground';
 $usesPython = true;
+$mainClass = 'container lab-main';
+$extraScripts = ['assets/js/lab.js'];
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="playground-head">
   <div>
-    <h1>🧪 Laboratorio</h1>
-    <p class="muted">Tu espacio libre para experimentar. Tienes <b>numpy</b>, <b>pandas</b> y <b>matplotlib</b>, y estos archivos listos para leer:
-      <code>ventas.csv</code>, <code>ventas_sucias.csv</code>, <code>clima.csv</code>.</p>
-  </div>
-  <div class="snippets">
-    <?php foreach ($snippets as $name => $code): ?>
-      <button class="chip" data-snippet="<?= e($code) ?>"><?= e($name) ?></button>
-    <?php endforeach; ?>
+    <h1 class="game-title">Laboratorio de datos</h1>
+    <p class="muted">Sube tus archivos de <b>Excel</b> o <b>CSV</b> y analízalos con Python. Tus archivos <b>no salen de tu computadora</b>: todo corre dentro de tu navegador.</p>
   </div>
 </div>
-<div class="playground runner" data-runner data-persist="playground">
-  <div class="pg-editor">
-    <textarea class="code" data-code><?= e($snippets['Explorar ventas']) ?></textarea>
+
+<div class="lab">
+  <aside class="lab-side">
+    <section class="lab-panel">
+      <h2 class="lab-panel-title">📂 Mis archivos</h2>
+      <label class="dropzone" id="dropzone">
+        <input type="file" id="file-input" accept=".xlsx,.xlsm,.xls,.csv,.tsv,.txt,.json" multiple hidden>
+        <span class="dz-icon">⬆️</span>
+        <b>Arrastra tu Excel aquí</b>
+        <small>o haz clic para elegirlo · .xlsx .xls .csv</small>
+      </label>
+      <ul class="file-list" id="file-list"><li class="muted small">Cargando…</li></ul>
+      <p class="muted small">💡 Lo que guardes con <code>to_excel()</code> o <code>to_csv()</code> aparece aquí para descargarlo.</p>
+    </section>
+
+    <section class="lab-panel">
+      <h2 class="lab-panel-title">🧰 Caja de herramientas</h2>
+      <div class="toolbox">
+        <?php foreach ($tools as $grupo => $items): ?>
+          <details class="tool-group" <?= $grupo === '📥 Leer datos' ? 'open' : '' ?>>
+            <summary><?= e($grupo) ?></summary>
+            <?php foreach ($items as $nombre => $codigo): ?>
+              <button class="tool" data-snippet="<?= e($codigo) ?>"><?= e($nombre) ?></button>
+            <?php endforeach; ?>
+          </details>
+        <?php endforeach; ?>
+      </div>
+      <div class="libs">
+        <span>pandas</span><span>numpy</span><span>matplotlib</span><span>openpyxl</span>
+        <span>seaborn</span><span>scipy</span><span>scikit-learn</span><span>statsmodels</span>
+      </div>
+    </section>
+  </aside>
+
+  <div class="lab-main-col runner" data-runner data-persist="playground-v2" data-limite="60">
+    <div class="lab-editor-head">
+      <span class="lab-panel-title">💻 Código</span>
+      <span class="muted small">Ctrl + Enter para ejecutar · La primera vez que uses una librería tarda unos segundos</span>
+    </div>
+    <textarea class="code" data-code><?= e($inicial) ?></textarea>
     <details class="inputs">
       <summary>⌨️ Entradas para <code>input()</code> (una por línea)</summary>
       <textarea data-inputs rows="3" placeholder="Ana&#10;25"></textarea>
@@ -36,12 +64,9 @@ require __DIR__ . '/includes/header.php';
     <div class="runner-actions">
       <button class="btn btn-primary" data-run>▶ Ejecutar <kbd>Ctrl+Enter</kbd></button>
       <button class="btn btn-ghost" data-clear>🧹 Limpiar salida</button>
-      <a class="btn btn-ghost" href="data/ventas.csv" download>⬇ ventas.csv</a>
     </div>
-  </div>
-  <div class="pg-output">
-    <div class="output-title">Salida</div>
-    <div class="output" data-output><span class="muted">Aquí aparecerá el resultado de tu código.</span></div>
+    <div class="output-title">📊 Resultado</div>
+    <div class="output lab-output" data-output><span class="muted">Aquí aparecerán tus tablas, gráficos y mensajes.</span></div>
   </div>
 </div>
 <?php require __DIR__ . '/includes/footer.php'; ?>

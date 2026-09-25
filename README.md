@@ -8,7 +8,11 @@ Pensada para personas sin ningún conocimiento previo de programación.
 - ✅ **Ejercicios que se corrigen solos**, con pistas, solución y errores explicados en español.
 - 🎮 **Gamificación**: XP, 8 niveles, rachas diarias, 14 logros, ranking, confeti y sonidos.
 - 📊 **Datos reales de práctica**: `ventas.csv` (300 ventas), `ventas_sucias.csv` (para limpieza) y `clima.csv`.
-- 🧪 **Laboratorio** libre con numpy, pandas y matplotlib.
+- 🧪 **Laboratorio de datos**: sube tus propios archivos **Excel (.xlsx/.xls) o CSV**, analízalos con
+  pandas, numpy, matplotlib, seaborn, scipy, scikit-learn y statsmodels, y descarga los resultados
+  (`to_excel`, `to_csv`). Incluye una caja de herramientas con código listo: leer todas las hojas,
+  radiografía de datos, tabla dinámica, unir hojas (tipo BUSCARV), correlación, mapa de calor,
+  regresión, prueba t y exportar reportes de varias hojas.
 
 ## Ruta de aprendizaje
 
@@ -48,6 +52,13 @@ totalmente offline (por ejemplo, en un aula sin internet):
 2. En `config/config.php` cambia `pyodide_url` a `'assets/pyodide/'`.
 
 Si el editor con colores no puede cargar, el sitio usa automáticamente un editor sencillo.
+En modo offline todo funciona excepto **seaborn**, que se instala desde PyPI la primera vez que se importa.
+
+### ¿Dónde quedan los archivos que subo al laboratorio?
+
+En ningún servidor: se copian al disco virtual de Python **dentro de tu navegador**. Por eso son privados,
+pero se pierden al recargar la página (vuelve a subirlos o descarga tus resultados antes de salir).
+El límite es de 30 MB por archivo.
 
 ## Estructura del proyecto
 
@@ -62,7 +73,9 @@ content/lessons/*.php                Contenido de cada lección
 assets/js/py-worker.js               Web Worker que ejecuta Python con Pyodide
 assets/py/harness.py                 Ejecuta el código, captura salida/gráficos y corrige
 assets/js/lesson.js                  Motor de lecciones (pasos, quiz, retos)
-data/*.csv                           Datasets de práctica
+data/*.csv, data/ventas.xlsx         Datasets de práctica (el Excel tiene 3 hojas)
+content/lab_tools.php                Caja de herramientas del laboratorio
+assets/js/lab.js                     Subir, explorar y descargar archivos
 database/schema.sql                  Esquema MySQL
 tools/test_lessons.py                Prueba automática de todo el contenido
 ```
@@ -91,10 +104,10 @@ El código corre dentro de un Web Worker: si alguien escribe un bucle infinito, 
 3. Verifica que todo funcione:
 
 ```bash
-pip install numpy pandas matplotlib
+pip install numpy pandas matplotlib openpyxl scipy scikit-learn seaborn
 python tools/test_lessons.py
 ```
 
-El script comprueba que cada solución pase su revisión, que el código inicial **no** la pase y que los ejemplos corran sin error.
+El script comprueba que cada solución pase su revisión, que el código inicial **no** la pase, que los ejemplos corran sin error y que funcionen todas las herramientas del laboratorio.
 
 > ⚠️ En strings PHP con comillas dobles, escapa el `$` de las f-strings de Python (`\$`), o usa nowdoc (`<<<'PY'`).

@@ -5,7 +5,8 @@ const Py = {
   pendientes: new Map(),
   contador: 0,
   LIMITE_MS: 12000,
-  DATASETS: ['ventas.csv', 'ventas_sucias.csv', 'clima.csv'],
+  DATASETS: ['ventas.csv', 'ventas_sucias.csv', 'clima.csv', 'ventas.xlsx'],
+  subidos: new Map(),  // archivos del usuario: se vuelven a copiar si Python se reinicia
 
   iniciar() {
     if (this.worker) return;
@@ -23,6 +24,7 @@ const Py = {
       datasets: this.DATASETS.map((n) => ({ nombre: n, url: base + 'data/' + n })),
     });
     this.cambiarEstado('cargando', 'Despertando a Python…');
+    this.subidos.forEach((datos, nombre) => this.operacion('subir', { nombre, datos: datos.slice(0) }));
   },
 
   cambiarEstado(estado, texto) {
@@ -43,7 +45,10 @@ const Py = {
       else if (!m.id) this.cambiarEstado('cargando', m.texto);
     } else if (m.tipo === 'corriendo' && p) {
       if (p.onEstado) p.onEstado('Ejecutando…');
-      p.timer = setTimeout(() => this.cortar(m.id), this.LIMITE_MS);
+      p.timer = setTimeout(() => this.cortar(m.id), p.limite || this.LIMITE_MS);
+    } else if (m.tipo === 'respuesta' && p) {
+      this.pendientes.delete(m.id);
+      if (m.error) p.reject(new Error(m.error)); else p.resolve(m);
     } else if (m.tipo === 'resultado' && p) {
       clearTimeout(p.timer);
       this.pendientes.delete(m.id);
@@ -56,21 +61,56 @@ const Py = {
     const p = this.pendientes.get(id);
     this.worker.terminate();
     this.worker = null;
-    this.pendientes.forEach((q) => clearTimeout(q.timer));
+    this.pendientes.forEach((q, qid) => {
+      clearTimeout(q.timer);
+      if (qid !== id && q.reject) q.reject(new Error('Python se reinició'));
+    });
     this.pendientes.clear();
     if (p) p.resolve({
       stdout: '', imagenes: [], check_ok: p.check ? false : null,
-      error: 'TimeoutError: tu código tardó más de ' + this.LIMITE_MS / 1000 + ' segundos',
+      error: 'TimeoutError: tu código tardó más de ' + (p.limite || this.LIMITE_MS) / 1000 + ' segundos',
       pista: '¿Tienes un bucle infinito? Revisa que la condición de tu while llegue a ser False en algún momento.',
     });
     this.iniciar();
   },
 
-  ejecutar(codigo, { check = null, entradas = [], onEstado = null } = {}) {
+  /** Operaciones con archivos en el disco virtual de Python: subir, listar, leer, borrar. */
+  operacion(tipo, datos = {}) {
+    this.iniciar();
+    const id = ++this.contador;
+    return new Promise((resolve, reject) => {
+      this.pendientes.set(id, { resolve, reject });
+      this.worker.postMessage({ tipo, id, ...datos }, datos.datos ? [datos.datos] : []);
+    });
+  },
+
+  async subir(archivo) {
+    const datos = await archivo.arrayBuffer();
+    const r = await this.operacion('subir', { nombre: archivo.name, datos: datos.slice(0) });
+    this.subidos.set(r.nombre, datos);
+    return r.nombre;
+  },
+
+  listar() { return this.operacion('listar').then((r) => r.lista); },
+
+  async descargar(nombre) {
+    const r = await this.operacion('leer', { nombre });
+    const url = URL.createObjectURL(new Blob([r.datos]));
+    const a = Object.assign(document.createElement('a'), { href: url, download: nombre });
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  },
+
+  borrar(nombre) {
+    this.subidos.delete(nombre);
+    return this.operacion('borrar', { nombre });
+  },
+
+  ejecutar(codigo, { check = null, entradas = [], onEstado = null, limite = null } = {}) {
     this.iniciar();
     const id = ++this.contador;
     return new Promise((resolve) => {
-      this.pendientes.set(id, { resolve, onEstado, check });
+      this.pendientes.set(id, { resolve, onEstado, check, limite });
       this.worker.postMessage({ tipo: 'correr', id, codigo, check, entradas });
     });
   },
@@ -162,6 +202,7 @@ function montarRunner(root) {
     const entradas = inputs ? inputs.value.split('\n').filter((l) => l !== '') : [];
     const r = await Py.ejecutar(editor.getValue(), {
       entradas,
+      limite: root.dataset.limite ? +root.dataset.limite * 1000 : null,
       onEstado: (t) => { const m = out.querySelector('[data-msg]'); if (m) m.textContent = t; },
     });
     mostrarSalida(out, r);
@@ -169,6 +210,7 @@ function montarRunner(root) {
     btn.disabled = false;
     btn.innerHTML = texto;
     App.api('run', { chart: (r.imagenes || []).length > 0 });
+    root.dispatchEvent(new CustomEvent('py-ejecutado', { detail: r }));
     return r;
   }
 
