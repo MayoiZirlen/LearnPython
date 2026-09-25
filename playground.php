@@ -8,7 +8,7 @@ $pageTitle = 'Laboratorio';
 $page = 'playground';
 $usesPython = true;
 $mainClass = 'container lab-main';
-$extraScripts = ['assets/js/lab.js'];
+$extraScripts = ['assets/js/lab.js', 'assets/js/asistente.js'];
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="playground-head">
@@ -51,7 +51,43 @@ require __DIR__ . '/includes/header.php';
     </section>
   </aside>
 
-  <div class="lab-main-col runner" data-runner data-persist="playground-v2" data-limite="60">
+  <div class="lab-main-col">
+  <div class="mode-tabs" role="tablist">
+    <button class="mode-tab" data-modo="asistente" role="tab">🪄 Asistente de Excel <small>sin código</small></button>
+    <button class="mode-tab" data-modo="codigo" role="tab">💻 Código libre</button>
+  </div>
+
+  <section class="wizard" id="asistente" data-panel="asistente">
+    <div class="wz-source">
+      <label>📗 Archivo <select id="wz-archivo"></select></label>
+      <label>📄 Hoja <select id="wz-hoja"></select></label>
+      <span class="wz-carga" id="wz-carga"></span>
+      <button class="btn btn-ghost btn-sm" id="wz-reiniciar">↺ Empezar de nuevo</button>
+    </div>
+    <div class="wz-recipes"><span class="muted small">Recetas rápidas:</span> <span id="wz-recetas"></span></div>
+    <div class="wz-grid">
+      <div class="wz-left">
+        <div class="lab-panel-title">🪄 Tus acciones</div>
+        <p class="muted small">Elige qué quieres hacerle a tu tabla. Cada acción se aplica sobre el resultado de la anterior, y te mostramos el código Python que la hace.</p>
+        <ol class="wz-steps" id="wz-pasos"></ol>
+        <button class="btn btn-primary" id="wz-agregar">➕ Agregar acción</button>
+        <div class="wz-menu" id="wz-menu" hidden></div>
+      </div>
+      <div class="wz-right">
+        <div class="lab-panel-title">🐍 Así se hace en Python</div>
+        <p class="muted small">Pasa el mouse sobre una acción para ver sus líneas resaltadas.</p>
+        <div class="wz-code" id="wz-codigo"></div>
+        <div class="runner-actions">
+          <button class="btn btn-ghost btn-sm" id="wz-abrir">✏️ Abrir en el editor</button>
+          <button class="btn btn-ghost btn-sm" id="wz-copiar">📋 Copiar código</button>
+        </div>
+      </div>
+    </div>
+    <div class="output-title">📊 Resultado</div>
+    <div class="output lab-output" id="wz-salida"></div>
+  </section>
+
+  <div class="runner" data-panel="codigo" data-runner data-persist="playground-v2" data-limite="60">
     <div class="lab-editor-head">
       <span class="lab-panel-title">💻 Código</span>
       <span class="muted small">Ctrl + Enter para ejecutar · La primera vez que uses una librería tarda unos segundos</span>
@@ -67,6 +103,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="output-title">📊 Resultado</div>
     <div class="output lab-output" data-output><span class="muted">Aquí aparecerán tus tablas, gráficos y mensajes.</span></div>
+  </div>
   </div>
 </div>
 <?php require __DIR__ . '/includes/footer.php'; ?>

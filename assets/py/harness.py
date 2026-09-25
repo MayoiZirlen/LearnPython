@@ -161,7 +161,47 @@ def _mostrar_valor(valor):
     return None, repr(valor)
 
 
-def ejecutar(codigo, check=None, entradas=None):
+def inspeccionar_df(df):
+    """Describe una tabla (filas, columnas, tipos y valores de ejemplo) para el Asistente de Excel."""
+    import pandas as pd
+
+    if not hasattr(df, "columns"):
+        return None
+    info = {"filas": int(len(df)), "columnas": []}
+    for c in df.columns:
+        s = df[c]
+        if pd.api.types.is_bool_dtype(s):
+            tipo = "bool"
+        elif pd.api.types.is_numeric_dtype(s):
+            tipo = "num"
+        elif pd.api.types.is_datetime64_any_dtype(s):
+            tipo = "fecha"
+        else:
+            tipo = "texto"
+        col = {"nombre": str(c), "tipo": tipo, "nulos": int(s.isna().sum())}
+        if tipo == "texto":
+            unicos = s.dropna().astype(str).unique()
+            col["distintos"] = int(len(unicos))
+            col["valores"] = sorted(unicos[:300].tolist())[:80]
+        info["columnas"].append(col)
+    return info
+
+
+def _ejecutar_extra(codigo, espacio):
+    """Ejecuta código auxiliar (no visible para el estudiante) y devuelve lo que imprime."""
+    salida = io.StringIO()
+    viejo = sys.stdout
+    sys.stdout = salida
+    try:
+        exec(compile(codigo, "<asistente>", "exec"), espacio)
+    except Exception as exc:  # el auxiliar nunca debe romper la ejecución principal
+        print(json.dumps({"error_interno": f"{type(exc).__name__}: {exc}"}))
+    finally:
+        sys.stdout = viejo
+    return salida.getvalue()
+
+
+def ejecutar(codigo, check=None, entradas=None, antes=None, despues=None):
     salida = io.StringIO()
     imagenes = []
     resultado = {
@@ -169,6 +209,8 @@ def ejecutar(codigo, check=None, entradas=None):
         "imagenes": imagenes, "html": None, "check_ok": None, "check_msg": "",
     }
     espacio = {"__name__": "__main__", "__builtins__": builtins}
+    if antes:
+        _ejecutar_extra(antes, espacio)
     viejo_out, viejo_err, viejo_input = sys.stdout, sys.stderr, builtins.input
     sys.stdout = sys.stderr = salida
     builtins.input = _Entradas(entradas)
@@ -192,6 +234,8 @@ def ejecutar(codigo, check=None, entradas=None):
         sys.stdout, sys.stderr, builtins.input = viejo_out, viejo_err, viejo_input
 
     resultado["stdout"] = salida.getvalue()
+    if despues:
+        resultado["despues"] = _ejecutar_extra(despues, espacio)
 
     if check and resultado["error"] is None:
         espacio["_salida"] = resultado["stdout"]
@@ -212,5 +256,5 @@ def ejecutar(codigo, check=None, entradas=None):
     return resultado
 
 
-def ejecutar_json(codigo, check=None, entradas=None):
-    return json.dumps(ejecutar(codigo, check, entradas))
+def ejecutar_json(codigo, check=None, entradas=None, antes=None, despues=None):
+    return json.dumps(ejecutar(codigo, check, entradas, antes, despues))

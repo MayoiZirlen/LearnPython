@@ -8,6 +8,10 @@ Pensada para personas sin ningún conocimiento previo de programación.
 - ✅ **Ejercicios que se corrigen solos**, con pistas, solución y errores explicados en español.
 - 🎮 **Gamificación**: XP, 8 niveles, rachas diarias, 14 logros, ranking, confeti y sonidos.
 - 📊 **Datos reales de práctica**: `ventas.csv` (300 ventas), `ventas_sucias.csv` (para limpieza) y `clima.csv`.
+- 🪄 **Asistente de Excel sin código**: eliges archivo y hoja, agregas acciones (filtrar, ordenar,
+  agrupar, columnas calculadas, fechas, limpiar, tabla dinámica, unir hojas tipo BUSCARV, gráficos y
+  guardar como Excel con formato) y el sitio escribe y ejecuta el código Python de cada paso, con
+  comentarios en español. Con un clic lo llevas al editor para modificarlo.
 - 🧪 **Laboratorio de datos**: sube tus propios archivos **Excel (.xlsx/.xls) o CSV**, analízalos con
   pandas, numpy, matplotlib, seaborn, scipy, scikit-learn y statsmodels, y descarga los resultados
   (`to_excel`, `to_csv`). Incluye una caja de herramientas con código listo: leer todas las hojas,
@@ -77,6 +81,7 @@ assets/js/lesson.js                  Motor de lecciones (pasos, quiz, retos)
 data/*.csv, data/ventas.xlsx         Datasets de práctica (el Excel tiene 3 hojas)
 content/lab_tools.php                Caja de herramientas del laboratorio
 assets/js/lab.js                     Subir, explorar y descargar archivos
+assets/js/asistente.js               Asistente de Excel: acciones → código Python
 assets/wheels/                       openpyxl y seaborn (no vienen en Pyodide)
 database/schema.sql                  Esquema MySQL
 tools/test_lessons.py                Prueba automática de todo el contenido

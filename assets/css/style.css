@@ -701,3 +701,82 @@ kbd { font-size: .65em; opacity: .75; border: 1px solid currentColor; padding: 0
   .lab-side { position: static; max-height: none; min-width: 0; overflow: visible; padding-right: 0; }
   .lab-editor-head .muted { display: none; }
 }
+
+/* ---------- Pestañas del laboratorio ---------- */
+.mode-tabs { display: flex; gap: 14px; margin: 0 0 18px 6px; flex-wrap: wrap; }
+.mode-tab {
+  font-family: var(--display); font-size: 1.35rem; text-transform: uppercase; letter-spacing: .03em; cursor: pointer;
+  color: #fff; background: #000; border: 2px solid #fff; padding: 4px 18px; transform: skewX(var(--skew));
+  transition: transform .12s, background .12s;
+}
+.mode-tab small { font-family: var(--ui); font-size: .8rem; letter-spacing: .06em; opacity: .8; margin-left: 4px; }
+.mode-tab:hover { transform: skewX(var(--skew)) translateY(-2px); }
+.mode-tab.active { background: var(--red); box-shadow: 5px 5px 0 #fff; transform: skewX(var(--skew)) rotate(-1.5deg) scale(1.04); }
+
+/* ---------- Asistente de Excel ---------- */
+.wz-source { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; background: #000; border-left: 6px solid var(--yellow); padding: 10px 14px; }
+.wz-source label { font-family: var(--ui); font-weight: 800; letter-spacing: .05em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+.wz-source select, .wz-field select, .wz-field input {
+  font: inherit; font-family: 'Nunito', sans-serif; font-weight: 700; text-transform: none; letter-spacing: 0;
+  background: #111; color: #fff; border: 2px solid #444; padding: 5px 8px; max-width: 100%;
+}
+.wz-source select:focus, .wz-field select:focus, .wz-field input:focus { outline: none; border-color: var(--red); }
+.wz-carga { color: var(--cyan); font-family: var(--ui); font-weight: 800; letter-spacing: .04em; }
+.wz-source .btn { margin-left: auto; }
+.wz-recipes { margin: 12px 0 4px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+#wz-recetas { display: contents; }
+.wz-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 22px; margin-top: 16px; align-items: start; }
+.wz-steps { list-style: none; margin: 10px 0 14px; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.wz-empty { color: var(--muted); background: rgba(0, 0, 0, .6); border: 2px dashed #444; padding: 16px; }
+.wz-step {
+  position: relative; background: linear-gradient(160deg, #1b1b1b, #101010); border: 2px solid #2c2c2c; border-left: 6px solid var(--red);
+  padding: 10px 12px; animation: enter .3s cubic-bezier(.2, 1.4, .4, 1);
+}
+.wz-step:hover { border-color: #555; border-left-color: var(--yellow); }
+.wz-step.wz-error { border-color: var(--red); background: #1f0506; }
+.wz-step.wz-incompleto { border-left-color: var(--orange); }
+.wz-step-head { display: flex; align-items: center; gap: 10px; }
+.wz-step-head b { font-family: var(--ui); font-weight: 800; font-size: 1.15rem; letter-spacing: .03em; text-transform: uppercase; }
+.wz-num {
+  display: grid; place-items: center; width: 30px; height: 30px; flex: none; font-family: var(--display); font-size: 1.1rem;
+  background: #fff; color: #000; transform: skewX(var(--skew)); box-shadow: 3px 3px 0 var(--red);
+}
+.wz-rows { margin-left: auto; font-size: .82rem; color: var(--cyan); font-weight: 700; white-space: nowrap; }
+.wz-step.wz-incompleto .wz-rows { color: var(--orange); }
+.wz-step-btns { display: flex; gap: 3px; }
+.wz-step-btns button { background: #000; color: #fff; border: 1px solid #444; cursor: pointer; font-size: .8rem; padding: 2px 7px; }
+.wz-step-btns button:hover:not(:disabled) { background: var(--red); }
+.wz-step-btns button:disabled { opacity: .3; cursor: default; }
+.wz-fields { display: flex; flex-wrap: wrap; gap: 10px 14px; margin: 10px 0 4px 40px; }
+.wz-field { display: flex; flex-direction: column; gap: 2px; min-width: 130px; }
+.wz-field > span { font-size: .75rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.wz-checks { display: flex; flex-wrap: wrap; gap: 4px 12px; max-width: 520px; }
+.wz-checks label { font-size: .92rem; cursor: pointer; white-space: nowrap; }
+.wz-checks input { accent-color: var(--red); }
+.wz-err { margin: 8px 0 0 40px; color: #ffb3b3; font-size: .9rem; }
+.wz-err small { color: #ffe38a; }
+.wz-snippet { margin: 8px 0 0 40px; }
+.wz-snippet summary { cursor: pointer; font-size: .8rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.wz-snippet pre { margin: 6px 0 0; background: var(--code-bg); color: #9ef07a; border-left: 3px solid var(--cyan); padding: 8px 10px; font-size: .82rem; overflow-x: auto; white-space: pre; }
+.wz-menu { margin-top: 14px; background: #000; border: 2px solid var(--red); padding: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; animation: enter .25s ease; }
+.wz-menu-title { font-family: var(--ui); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--yellow); margin-bottom: 4px; }
+.wz-menu button {
+  display: block; width: 100%; text-align: left; margin-bottom: 5px; cursor: pointer; font: inherit; font-weight: 700; font-size: .93rem;
+  color: #eee; background: #151515; border: 1px solid #2a2a2a; padding: 6px 9px; transition: transform .1s, background .1s;
+}
+.wz-menu button:hover:not(:disabled) { background: linear-gradient(90deg, var(--red), #3a0506); color: #fff; transform: translateX(4px); }
+.wz-menu button:disabled { opacity: .35; cursor: not-allowed; }
+.wz-right { position: sticky; top: 84px; }
+.wz-code .CodeMirror { min-height: 200px; max-height: 62vh; height: auto; font-size: 14px; }
+.wz-code .CodeMirror-scroll { max-height: 62vh; }
+.line-paso { background: rgba(255, 210, 31, .16) !important; box-shadow: inset 3px 0 0 var(--yellow); }
+.wizard .output-title { margin-top: 20px; }
+@media (max-width: 1100px) {
+  .wz-grid { grid-template-columns: minmax(0, 1fr); }
+  .wz-right { position: static; }
+}
+@media (max-width: 600px) {
+  .wz-fields, .wz-snippet, .wz-err { margin-left: 0; }
+  .wz-source .btn { margin-left: 0; }
+  .mode-tab { font-size: 1.05rem; padding: 4px 12px; }
+}

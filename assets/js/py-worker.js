@@ -64,7 +64,7 @@ async function instalarRuedas(codigo) {
   }
 }
 
-async function correr({ id, codigo, check, entradas }) {
+async function correr({ id, codigo, check, entradas, antes, despues }) {
   await listo;
   const todo = codigo + '\n' + (check || '');
   const paquetes = paquetesExtra(codigo);
@@ -83,7 +83,7 @@ async function correr({ id, codigo, check, entradas }) {
   }
   postMessage({ tipo: 'corriendo', id });
   const f = pyodide.globals.get('harness').ejecutar_json;
-  const json = f(codigo, check || null, pyodide.toPy(entradas || []));
+  const json = f(codigo, check || null, pyodide.toPy(entradas || []), antes || null, despues || null);
   f.destroy();
   postMessage({ tipo: 'resultado', id, resultado: JSON.parse(json) });
 }

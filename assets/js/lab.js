@@ -50,6 +50,7 @@ df.head(10)
   async function refrescar() {
     let archivos;
     try { archivos = await Py.listar(); } catch (e) { return; }
+    document.dispatchEvent(new CustomEvent('lab-archivos', { detail: archivos }));
     lista.innerHTML = archivos.map((a) => {
       const propio = !EJEMPLOS.has(a.nombre);
       const datos = /\.(xlsx|xlsm|xls|csv|tsv)$/i.test(a.nombre);
@@ -76,6 +77,7 @@ df.head(10)
         App.sfx('go');
         App.toast(`<span class="toast-icon">${icono(nombre)}</span><div><b>${E(nombre)}</b> listo para usar.<br>Generé código para explorarlo 👇</div>`, 'achievement', 4500);
         editor().setValue(codigoExplorar(nombre));
+        document.dispatchEvent(new CustomEvent('lab-subido', { detail: nombre }));
       } catch (e) {
         App.toast('No pude cargar ' + E(f.name) + ': ' + E(e.message), 'info', 5000);
       }
@@ -92,7 +94,7 @@ df.head(10)
     const b = ev.target.closest('button');
     if (!b) return;
     try {
-      if (b.dataset.explorar) { App.sfx('tab'); editor().setValue(codigoExplorar(b.dataset.explorar)); }
+      if (b.dataset.explorar) { App.sfx('tab'); modo('codigo', false); editor().setValue(codigoExplorar(b.dataset.explorar)); }
       if (b.dataset.bajar) await Py.descargar(b.dataset.bajar);
       if (b.dataset.borrar && confirm(`¿Quitar ${b.dataset.borrar} del laboratorio?`)) { await Py.borrar(b.dataset.borrar); refrescar(); }
     } catch (e) { App.toast('😬 ' + E(e.message), 'info'); }
@@ -100,6 +102,7 @@ df.head(10)
 
   document.querySelectorAll('.tool').forEach((b) => b.addEventListener('click', () => {
     App.sfx('tab');
+    modo('codigo', false);
     document.querySelectorAll('.tool.on').forEach((x) => x.classList.remove('on'));
     b.classList.add('on');
   }));
@@ -107,4 +110,23 @@ df.head(10)
   // Tras cada ejecución, el código pudo crear archivos nuevos (to_excel, to_csv…).
   runnerEl.addEventListener('py-ejecutado', refrescar);
   document.addEventListener('py-estado', (ev) => { if (ev.detail.estado === 'listo') refrescar(); });
+  document.addEventListener('lab-refrescar', refrescar);
+
+  // Pestañas: Asistente de Excel / Código libre (se recuerda la última elegida)
+  const pestanas = [...document.querySelectorAll('.mode-tab')];
+  function modo(m, sonar) {
+    pestanas.forEach((t) => t.classList.toggle('active', t.dataset.modo === m));
+    document.querySelectorAll('.lab [data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== m; });
+    try { localStorage.setItem('pyaprende:modo-lab', m); } catch (e) { /* */ }
+    if (sonar) App.sfx('tab');
+    if (m === 'codigo' && runnerEl._runner) setTimeout(() => runnerEl._runner.editor.refresh(), 0);
+    document.dispatchEvent(new CustomEvent('lab-modo', { detail: m }));
+  }
+  pestanas.forEach((t) => t.addEventListener('click', () => modo(t.dataset.modo, true)));
+  document.addEventListener('lab-modo', (ev) => {
+    if (!pestanas.find((t) => t.dataset.modo === ev.detail && t.classList.contains('active'))) modo(ev.detail, false);
+  });
+  let inicial = 'asistente';
+  try { inicial = localStorage.getItem('pyaprende:modo-lab') || 'asistente'; } catch (e) { /* */ }
+  modo(inicial, false);
 })();

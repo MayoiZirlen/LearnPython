@@ -108,12 +108,12 @@ const Py = {
     return this.operacion('borrar', { nombre });
   },
 
-  ejecutar(codigo, { check = null, entradas = [], onEstado = null, limite = null } = {}) {
+  ejecutar(codigo, { check = null, entradas = [], onEstado = null, limite = null, antes = null, despues = null } = {}) {
     this.iniciar();
     const id = ++this.contador;
     return new Promise((resolve) => {
       this.pendientes.set(id, { resolve, onEstado, check, limite });
-      this.worker.postMessage({ tipo: 'correr', id, codigo, check, entradas });
+      this.worker.postMessage({ tipo: 'correr', id, codigo, check, entradas, antes, despues });
     });
   },
 };
