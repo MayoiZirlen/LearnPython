@@ -1,0 +1,4 @@
+# Tipos necesarios para Pyodide cuando se sirve localmente (modo sin internet)
+AddType application/wasm .wasm
+AddType text/plain .py
+DirectoryIndex index.php

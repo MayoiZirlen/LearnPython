@@ -1,0 +1,3 @@
+config/config.php
+assets/pyodide/
+.DS_Store

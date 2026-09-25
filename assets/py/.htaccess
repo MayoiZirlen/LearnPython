@@ -1,0 +1,4 @@
+# Este archivo Python se descarga al navegador; nunca se ejecuta en el servidor.
+Options -ExecCGI
+RemoveHandler .py
+AddType text/plain .py
