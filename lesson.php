@@ -42,6 +42,7 @@ require __DIR__ . '/includes/header.php';
     <div class="lesson-counter" id="lesson-counter"></div>
   </div>
   <div class="lesson-title">
+    <span class="stage-tag">Nivel <?= e(stage_label($slug)) ?></span>
     <span class="muted small"><?= e($module['icon'] . ' ' . $module['title']) ?></span>
     <h1><?= e(($lesson['icon'] ?? '') . ' ' . $lesson['title']) ?></h1>
   </div>

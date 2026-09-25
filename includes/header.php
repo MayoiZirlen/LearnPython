@@ -12,10 +12,11 @@ $f = flash();
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0a0a">
 <title><?= e($pageTitle ?? 'PyAprende') ?> · PyAprende</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐍</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&family=Nunito:wght@400;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <?php if ($usesPython): ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
@@ -31,6 +32,10 @@ window.PYAPRENDE = <?= json_encode([
 </script>
 </head>
 <body>
+<div class="bg-fx" aria-hidden="true">
+  <span class="deco-star d1">★</span><span class="deco-star d2">★</span><span class="deco-star d3">★</span><span class="deco-star d4">★</span>
+  <span class="deco-ring r1"></span><span class="deco-ring r2"></span>
+</div>
 <header class="topbar">
   <a class="brand" href="index.php"><span class="brand-logo">🐍</span><span class="brand-text">Py<b>Aprende</b></span></a>
   <nav class="nav">

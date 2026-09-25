@@ -1,5 +1,40 @@
 /* Utilidades generales: llamadas a la API, notificaciones, confeti y XP. */
 const App = {
+  audio: null,
+
+  sonidoActivo() {
+    try { return localStorage.getItem('pyaprende:sonido') !== 'no'; } catch (e) { return true; }
+  },
+
+  /** Sonidos cortitos generados con WebAudio: [frecuencia, inicio, duración, forma]. */
+  tono(notas) {
+    if (!App.sonidoActivo()) return;
+    try {
+      App.audio = App.audio || new (window.AudioContext || window.webkitAudioContext)();
+      const a = App.audio;
+      notas.forEach(([f, t, d, forma]) => {
+        const o = a.createOscillator(); const g = a.createGain();
+        o.frequency.value = f; o.type = forma || 'square';
+        g.gain.setValueAtTime(0.06, a.currentTime + t);
+        g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + t + d);
+        o.connect(g).connect(a.destination);
+        o.start(a.currentTime + t); o.stop(a.currentTime + t + d);
+      });
+    } catch (e) { /* sin audio */ }
+  },
+
+  sfx(tipo) {
+    const sonidos = {
+      move: [[880, 0, 0.04]],
+      tab: [[440, 0, 0.05], [660, 0.04, 0.06]],
+      go: [[523, 0, 0.08], [784, 0.07, 0.08], [1047, 0.14, 0.18]],
+      bien: [[660, 0, 0.1], [990, 0.09, 0.2]],
+      mal: [[196, 0, 0.18, 'sawtooth'], [147, 0.12, 0.22, 'sawtooth']],
+      fin: [[523, 0, 0.12], [659, 0.1, 0.12], [784, 0.2, 0.12], [1047, 0.3, 0.4]],
+    };
+    App.tono(sonidos[tipo] || sonidos.move);
+  },
+
   async api(action, data = {}) {
     if (!window.PYAPRENDE.logged) return null;
     try {
@@ -73,7 +108,7 @@ const App = {
     c.width = innerWidth; c.height = innerHeight;
     document.body.appendChild(c);
     const ctx = c.getContext('2d');
-    const colors = ['#3776ab', '#ffd43b', '#22c55e', '#f97316', '#ec4899', '#8b5cf6'];
+    const colors = ['#e5191c', '#ffffff', '#ffd21f', '#3fe0ff', '#e5191c', '#111111'];
     const ps = Array.from({ length: n }, () => ({
       x: innerWidth / 2 + (Math.random() - 0.5) * 200, y: innerHeight / 3,
       vx: (Math.random() - 0.5) * 14, vy: Math.random() * -14 - 4,

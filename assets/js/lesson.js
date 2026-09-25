@@ -13,26 +13,10 @@
   const MAL = ['Casi… ¡inténtalo otra vez! 💪', 'No pasa nada, así se aprende 🌱', 'Buen intento, revisa la pista 🔍', 'Uy, todavía no. ¡Tú puedes! 🚀'];
   const azar = (a) => a[Math.floor(Math.random() * a.length)];
 
-  // Sonidos cortitos generados con WebAudio (se pueden silenciar).
-  let sonido = true;
-  try { sonido = localStorage.getItem('pyaprende:sonido') !== 'no'; } catch (e) { /* sin almacenamiento */ }
-  let audio = null;
-  function tono(notas) {
-    if (!sonido) return;
-    try {
-      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
-      notas.forEach(([f, t, d]) => {
-        const o = audio.createOscillator(); const g = audio.createGain();
-        o.frequency.value = f; o.type = 'sine';
-        g.gain.setValueAtTime(0.12, audio.currentTime + t);
-        g.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + t + d);
-        o.connect(g).connect(audio.destination);
-        o.start(audio.currentTime + t); o.stop(audio.currentTime + t + d);
-      });
-    } catch (e) { /* sin audio */ }
-  }
-  const sonidoBien = () => tono([[660, 0, 0.12], [880, 0.1, 0.2]]);
-  const sonidoMal = () => tono([[220, 0, 0.18], [180, 0.12, 0.2]]);
+  let sonido = App.sonidoActivo();
+  const tono = (notas) => App.tono(notas);
+  const sonidoBien = () => App.sfx('bien');
+  const sonidoMal = () => App.sfx('mal');
 
   const btnSonido = document.createElement('button');
   btnSonido.className = 'sound-toggle';
@@ -240,15 +224,16 @@
   async function terminar() {
     guardarCodigo();
     const ganado = L.steps.reduce((acc, s, i) => acc + (hechos.has(i) ? s.xp : 0), 0);
+    const rango = vioSolucion.size === 0 ? 'Perfect' : vioSolucion.size === 1 ? 'Great' : 'Cleared';
     const res = await App.api('lesson', { lesson: L.slug });
-    tono([[523, 0, 0.15], [659, 0.12, 0.15], [784, 0.24, 0.15], [1047, 0.36, 0.35]]);
+    App.sfx('fin');
     App.confetti(220);
     const siguiente = L.next
       ? `<a class="btn btn-primary btn-lg" href="lesson.php?l=${encodeURIComponent(L.next)}">Siguiente: ${E(L.nextTitle)} ▶</a>`
       : '<a class="btn btn-primary btn-lg" href="profile.php">🏆 Ver mis logros</a>';
     cont.innerHTML = `<div class="step-card finish">
-      <div class="finish-trophy">🏆</div>
-      <h2>¡Lección completada!</h2>
+      <div class="finish-banner">¡Lección superada!</div>
+      <div class="finish-rank rank rank-${rango.toLowerCase()}">${rango}</div>
       <p class="muted">${E(L.title)}</p>
       <div class="finish-stats">
         <div><b>${hechos.size}</b><small>retos resueltos</small></div>
@@ -265,7 +250,7 @@
   $('btn-prev').onclick = () => ir(actual - 1);
   $('btn-next').onclick = () => {
     if (!puedeAvanzar(actual)) return;
-    if (actual === L.steps.length - 1) terminar(); else { tono([[520, 0, 0.06]]); ir(actual + 1); }
+    if (actual === L.steps.length - 1) terminar(); else { App.sfx('move'); ir(actual + 1); }
   };
   $('dots').addEventListener('click', (ev) => {
     const b = ev.target.closest('.dot');

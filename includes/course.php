@@ -104,3 +104,57 @@ function recommended_lesson(array $done): string
     }
     return lesson_order()[0];
 }
+
+const TIERS = [
+    'facil' => 'Fácil',
+    'normal' => 'Normal',
+    'dificil' => 'Difícil',
+    'experto' => 'Experto',
+];
+
+/** Dificultad de 1 a 9 estrellas según la posición de la lección en el curso. */
+function lesson_difficulty(string $slug): int
+{
+    $order = lesson_order();
+    $i = array_search($slug, $order, true);
+    return 1 + (int) floor(($i ?: 0) * 8 / max(1, count($order) - 1));
+}
+
+/** Número de "nivel" estilo videojuego: módulo-lección (ej. 2-1). */
+function stage_label(string $slug): string
+{
+    foreach (course() as $mi => $m) {
+        $li = array_search($slug, $m['lessons'], true);
+        if ($li !== false) {
+            return ($mi + 1) . '-' . ($li + 1);
+        }
+    }
+    return '?';
+}
+
+/**
+ * Rango obtenido en cada lección:
+ * PERFECT (sin ver soluciones), GREAT (1 solución vista), CLEARED (más) o EN CURSO.
+ */
+function lesson_ranks(int $userId): array
+{
+    $st = db()->prepare('SELECT lesson_slug, SUM(xp_earned = 5) AS vistas FROM step_progress WHERE user_id = ? GROUP BY lesson_slug');
+    $st->execute([$userId]);
+    $solutions = array_column($st->fetchAll(), 'vistas', 'lesson_slug');
+    $ranks = [];
+    foreach ($solutions as $slug => $n) {
+        $ranks[$slug] = 'progress';
+    }
+    foreach (completed_lessons($userId) as $slug) {
+        $n = (int) ($solutions[$slug] ?? 0);
+        $ranks[$slug] = $n === 0 ? 'perfect' : ($n === 1 ? 'great' : 'cleared');
+    }
+    return $ranks;
+}
+
+const RANK_LABELS = [
+    'perfect' => 'Perfect',
+    'great' => 'Great',
+    'cleared' => 'Cleared',
+    'progress' => 'En curso',
+];
