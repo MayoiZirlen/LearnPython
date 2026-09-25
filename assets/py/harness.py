@@ -129,6 +129,9 @@ def _formatear_error(exc):
         detalle = f"{nombre}: {exc}"
     linea = _linea_de_error(exc)
     pista = PISTAS.get(nombre)
+    if "Missing optional dependency" in str(exc):
+        pista = ("A pandas le falta una librería para este tipo de archivo. Recarga la página con "
+                 "Ctrl + F5 y vuelve a intentar; si sigue, revisa tu conexión a internet.")
     if pista is None:
         for base in type(exc).__mro__:
             if base.__name__ in PISTAS:

@@ -105,3 +105,19 @@ function flash(?string $msg = null, string $type = 'info'): ?array
     unset($_SESSION['flash']);
     return $f;
 }
+
+/** Ruta de un archivo estático con su versión (fecha de modificación) para evitar la caché vieja. */
+function asset(string $path): string
+{
+    $file = ROOT . '/' . $path;
+    return $path . (is_file($file) ? '?v=' . filemtime($file) : '');
+}
+
+/** Versión conjunta del motor de Python (worker + arnés): cambia cuando cualquiera cambia. */
+function python_version(): int
+{
+    return max(array_map('filemtime', [
+        ROOT . '/assets/js/py-worker.js',
+        ROOT . '/assets/py/harness.py',
+    ]));
+}

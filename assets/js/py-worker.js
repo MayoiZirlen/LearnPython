@@ -2,10 +2,13 @@
  * Así un bucle infinito no congela el sitio: la página puede terminar el worker y crear otro. */
 let pyodide = null;
 let listo = null;
+let wheelsUrl = '';
+const instaladas = new Set();
 const CARPETA = '/home/pyodide/';
 const INTERNOS = new Set(['harness.py']);
 
-async function iniciar({ pyodideUrl, harnessUrl, datasets }) {
+async function iniciar({ pyodideUrl, harnessUrl, datasets, wheels }) {
+  wheelsUrl = wheels;
   importScripts(pyodideUrl + 'pyodide.js');
   postMessage({ tipo: 'estado', texto: 'Despertando a Python…' });
   pyodide = await loadPyodide({ indexURL: pyodideUrl });
@@ -25,37 +28,55 @@ async function iniciar({ pyodideUrl, harnessUrl, datasets }) {
   postMessage({ tipo: 'listo' });
 }
 
-/** Paquetes que el código necesita aunque no aparezcan en un import. */
+/** Paquetes del catálogo de Pyodide que el código necesita aunque no aparezcan en un import. */
 function paquetesExtra(codigo) {
   const p = [];
   if (/\.(plot|hist|boxplot)\s*\(|matplotlib|seaborn|sns\./.test(codigo)) p.push('matplotlib');
-  if (/read_excel|to_excel|ExcelWriter|openpyxl|\.xlsx/.test(codigo)) p.push('openpyxl');
   if (/\.xls["']/.test(codigo)) p.push('xlrd');
   return p;
 }
 
-/** Librerías puras de PyPI que no vienen en Pyodide: se instalan con micropip. */
-const DESDE_PYPI = { seaborn: 'seaborn' };
+/**
+ * Librerías de Python puro que NO vienen en Pyodide: van incluidas en assets/wheels/
+ * y se instalan desde ahí (funciona también sin internet).
+ * Cada una: cuándo se necesita, qué paquetes de Pyodide requiere y sus archivos .whl en orden.
+ */
+const RUEDAS = {
+  openpyxl: {
+    cuando: /read_excel|to_excel|ExcelWriter|ExcelFile|openpyxl|\.xlsx?m?\b/,
+    requiere: [],
+    archivos: ['et_xmlfile-2.0.0-py3-none-any.whl', 'openpyxl-3.1.5-py2.py3-none-any.whl'],
+  },
+  seaborn: {
+    cuando: /\b(import|from)\s+seaborn\b/,
+    requiere: ['numpy', 'pandas', 'matplotlib'],
+    archivos: ['seaborn-0.13.2-py3-none-any.whl'],
+  },
+};
+
+async function instalarRuedas(codigo) {
+  for (const [nombre, r] of Object.entries(RUEDAS)) {
+    if (instaladas.has(nombre) || !r.cuando.test(codigo)) continue;
+    if (r.requiere.length) await pyodide.loadPackage(r.requiere);
+    // loadPackage acepta URLs de archivos .whl (no usamos micropip: su versión 0.8 falla con deps=False).
+    await pyodide.loadPackage(r.archivos.map((a) => wheelsUrl + a));
+    instaladas.add(nombre);
+  }
+}
 
 async function correr({ id, codigo, check, entradas }) {
   await listo;
   const todo = codigo + '\n' + (check || '');
   const paquetes = paquetesExtra(codigo);
-  if (paquetes.length || /\bimport\b/.test(todo)) {
+  const ruedas = Object.values(RUEDAS).some((r) => r.cuando.test(codigo));
+  if (paquetes.length || ruedas || /\bimport\b/.test(todo)) {
     postMessage({ tipo: 'estado', id, texto: 'Cargando librerías (solo la primera vez)…' });
     // Si algo no se puede descargar seguimos: el error aparecerá al importar, explicado en español.
     for (const p of paquetes) {
       try { await pyodide.loadPackage(p); } catch (e) { /* paquete no disponible */ }
     }
     try { await pyodide.loadPackagesFromImports(todo); } catch (e) { /* sin conexión */ }
-    for (const [modulo, paquete] of Object.entries(DESDE_PYPI)) {
-      if (new RegExp('\\b(import|from)\\s+' + modulo + '\\b').test(codigo)) {
-        try {
-          await pyodide.loadPackage('micropip');
-          await pyodide.pyimport('micropip').install(paquete);
-        } catch (e) { /* sin conexión */ }
-      }
-    }
+    try { await instalarRuedas(codigo); } catch (e) { console.error('No se pudo instalar una librería', String(e).slice(-700)); }
     const precargar = pyodide.globals.get('harness').precargar;
     try { precargar(codigo); } catch (e) { /* si falla, el error se verá al ejecutar */ }
     precargar.destroy();

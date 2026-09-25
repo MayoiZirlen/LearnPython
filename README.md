@@ -52,7 +52,8 @@ totalmente offline (por ejemplo, en un aula sin internet):
 2. En `config/config.php` cambia `pyodide_url` a `'assets/pyodide/'`.
 
 Si el editor con colores no puede cargar, el sitio usa automáticamente un editor sencillo.
-En modo offline todo funciona excepto **seaborn**, que se instala desde PyPI la primera vez que se importa.
+`openpyxl` (para Excel) y `seaborn` no vienen en Pyodide, así que van incluidos en `assets/wheels/`
+y funcionan también sin internet.
 
 ### ¿Dónde quedan los archivos que subo al laboratorio?
 
@@ -76,6 +77,7 @@ assets/js/lesson.js                  Motor de lecciones (pasos, quiz, retos)
 data/*.csv, data/ventas.xlsx         Datasets de práctica (el Excel tiene 3 hojas)
 content/lab_tools.php                Caja de herramientas del laboratorio
 assets/js/lab.js                     Subir, explorar y descargar archivos
+assets/wheels/                       openpyxl y seaborn (no vienen en Pyodide)
 database/schema.sql                  Esquema MySQL
 tools/test_lessons.py                Prueba automática de todo el contenido
 ```

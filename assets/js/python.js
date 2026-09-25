@@ -14,13 +14,15 @@ const Py = {
     let url = window.PYAPRENDE.pyodideUrl;
     if (!/^https?:/.test(url)) url = new URL(url, base).href;
     if (!url.endsWith('/')) url += '/';
-    this.worker = new Worker('assets/js/py-worker.js');
+    const v = '?v=' + (window.PYAPRENDE.pyVersion || 0);
+    this.worker = new Worker('assets/js/py-worker.js' + v);
     this.worker.onmessage = (ev) => this.mensaje(ev.data);
     this.worker.onerror = () => this.cambiarEstado('error', 'No se pudo iniciar Python');
     this.worker.postMessage({
       tipo: 'iniciar',
       pyodideUrl: url,
-      harnessUrl: base + 'assets/py/harness.py',
+      harnessUrl: base + 'assets/py/harness.py' + v,
+      wheels: base + 'assets/wheels/',
       datasets: this.DATASETS.map((n) => ({ nombre: n, url: base + 'data/' + n })),
     });
     this.cambiarEstado('cargando', 'Despertando a Python…');

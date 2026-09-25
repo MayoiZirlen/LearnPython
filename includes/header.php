@@ -22,12 +22,13 @@ $f = flash();
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
 <?php endif; ?>
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="<?= e(asset('assets/css/style.css')) ?>">
 <script>
 window.PYAPRENDE = <?= json_encode([
     'logged' => (bool) $user,
     'csrf' => csrf_token(),
     'pyodideUrl' => config('pyodide_url'),
+    'pyVersion' => python_version(),
 ], JSON_UNESCAPED_SLASHES) ?>;
 </script>
 </head>
