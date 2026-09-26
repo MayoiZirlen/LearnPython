@@ -29,6 +29,7 @@ window.PYAPRENDE = <?= json_encode([
     'csrf' => csrf_token(),
     'pyodideUrl' => config('pyodide_url'),
     'pyVersion' => python_version(),
+    'sonidosSitio' => (object) site_sounds(),
 ], JSON_UNESCAPED_SLASHES) ?>;
 </script>
 </head>
@@ -45,6 +46,7 @@ window.PYAPRENDE = <?= json_encode([
     <a href="ranking.php" class="<?= $page === 'ranking' ? 'active' : '' ?>">🏆 <span>Ranking</span></a>
   </nav>
   <div class="user-area">
+    <a class="settings-link <?= $page === 'ajustes' ? 'active' : '' ?>" href="ajustes.php" title="Ajustes de sonido">⚙️</a>
     <?php if ($user): ?>
       <span class="pill streak" title="Racha de días">🔥 <b id="hdr-streak"><?= (int) $user['streak'] ?></b></span>
       <span class="pill xp" title="Experiencia">⭐ <b id="hdr-xp"><?= (int) $user['xp'] ?></b> XP</span>

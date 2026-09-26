@@ -17,7 +17,6 @@
   }
 
   let sonido = App.sonidoActivo();
-  const tono = (notas) => App.tono(notas);
   const sonidoBien = () => App.sfx('bien');
   const sonidoMal = () => App.sfx('mal');
 
@@ -48,12 +47,13 @@
     if (!INFIERNO || vidas <= 0) return;
     vidas--;
     pintarVidas(true);
+    setTimeout(() => App.sfx('vida'), 250);
     document.body.classList.remove('hurt'); void document.body.offsetWidth; document.body.classList.add('hurt');
     if (vidas === 0) setTimeout(gameOver, 700);
   }
 
   async function gameOver() {
-    App.tono([[392, 0, 0.25, 'sawtooth'], [330, 0.25, 0.25, 'sawtooth'], [262, 0.5, 0.25, 'sawtooth'], [196, 0.75, 0.7, 'sawtooth']]);
+    App.sfx('gameover');
     const res = await App.api('reset', { lesson: L.slug });
     const perdida = res && res.ok ? res.xp_perdida : 0;
     const capa = document.createElement('div');

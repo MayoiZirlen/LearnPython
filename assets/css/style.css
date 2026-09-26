@@ -910,3 +910,47 @@ body.hurt main { animation: shake .4s; }
 .infierno-unlock b { font-family: var(--display); font-size: 1.8rem; color: var(--hell2); letter-spacing: .05em; text-shadow: 0 0 12px var(--hell1); }
 .infierno-unlock small { color: #ffcfb0; }
 .continue-card.is-infierno { background: linear-gradient(110deg, #000 0 55%, var(--hell1) 55% 100%); box-shadow: 0 0 24px rgba(255, 61, 0, .35); }
+
+/* ---------- Ajustes de sonido ---------- */
+.settings-link {
+  display: grid; place-items: center; width: 40px; height: 40px; font-size: 1.25rem; text-decoration: none;
+  background: #000; border: 2px solid #fff; transform: skewX(var(--skew)); transition: transform .15s, background .15s;
+}
+.settings-link:hover, .settings-link.active { background: var(--red); transform: skewX(var(--skew)) rotate(20deg); }
+.ajustes-main { max-width: 980px; }
+.ajustes-main h2 { margin-top: 30px; }
+.aj-master { display: flex; flex-wrap: wrap; gap: 20px 32px; align-items: center; margin-top: 18px; }
+.switch { display: flex; align-items: center; gap: 12px; cursor: pointer; font-family: var(--ui); font-size: 1.2rem; letter-spacing: .04em; text-transform: uppercase; }
+.switch input { display: none; }
+.switch-ui { position: relative; width: 58px; height: 30px; background: #333; border: 2px solid #fff; transform: skewX(var(--skew)); transition: background .2s; }
+.switch-ui::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: #fff; transition: left .2s; }
+.switch input:checked + .switch-ui { background: var(--red); }
+.switch input:checked + .switch-ui::after { left: 31px; }
+.aj-vol { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 240px; }
+.aj-vol input { flex: 1; accent-color: var(--red); }
+.aj-vol b { font-family: var(--display); font-size: 1.3rem; min-width: 56px; text-align: right; }
+.aj-paquetes { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.aj-paquete {
+  position: relative; display: flex; flex-direction: column; gap: 4px; cursor: pointer; padding: 14px 44px 14px 14px;
+  background: #111; border: 2px solid #2a2a2a; transition: transform .12s, border-color .12s;
+}
+.aj-paquete input { display: none; }
+.aj-paquete b { font-family: var(--ui); font-weight: 800; font-size: 1.2rem; letter-spacing: .03em; }
+.aj-paquete small { color: var(--muted); }
+.aj-paquete:hover { transform: translateY(-3px); border-color: #555; }
+.aj-paquete.on { border-color: var(--red); background: linear-gradient(160deg, #3a0506, #111 70%); box-shadow: 5px 5px 0 var(--red); }
+.aj-play { position: absolute; right: 10px; top: 12px; width: 30px; height: 30px; background: #000; color: #fff; border: 2px solid #fff; cursor: pointer; }
+.aj-play:hover { background: var(--red); }
+.aj-eventos { display: flex; flex-direction: column; gap: 6px; padding: 12px 16px; }
+.aj-evento { display: grid; grid-template-columns: 1fr minmax(0, 300px) auto; gap: 12px; align-items: center; padding: 6px 0; border-bottom: 1px solid #222; }
+.aj-evento:last-child { border-bottom: 0; }
+.aj-ev-nombre { font-weight: 700; }
+.aj-evento select { font: inherit; background: #000; color: #fff; border: 2px solid #444; padding: 6px 8px; width: 100%; }
+.aj-evento select:focus { outline: none; border-color: var(--red); }
+.aj-ev-btns { display: flex; gap: 10px; }
+.aj-ev-btns .btn { padding: 4px 10px; }
+.aj-subir { cursor: pointer; }
+@media (max-width: 640px) {
+  .aj-evento { grid-template-columns: 1fr; gap: 6px; }
+  .settings-link { width: 34px; height: 34px; font-size: 1rem; }
+}

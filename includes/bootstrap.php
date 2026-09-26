@@ -121,3 +121,20 @@ function python_version(): int
         ROOT . '/assets/py/harness.py',
     ]));
 }
+
+/**
+ * Sonidos del sitio: archivos en assets/sounds/ con el nombre del evento
+ * (por ejemplo bien.mp3, logro.wav, gameover.ogg). Se ofrecen a todos los usuarios.
+ */
+function site_sounds(): array
+{
+    $sonidos = [];
+    foreach (glob(ROOT . '/assets/sounds/*') ?: [] as $f) {
+        $evento = pathinfo($f, PATHINFO_FILENAME);
+        $ext = strtolower(pathinfo($f, PATHINFO_EXTENSION));
+        if (in_array($ext, ['mp3', 'wav', 'ogg', 'm4a'], true) && preg_match('/^[a-z]+$/', $evento)) {
+            $sonidos[$evento] = asset('assets/sounds/' . basename($f));
+        }
+    }
+    return $sonidos;
+}

@@ -18,6 +18,11 @@ Pensada para personas sin ningún conocimiento previo de programación.
   agrupar, columnas calculadas, fechas, limpiar, tabla dinámica, unir hojas tipo BUSCARV, gráficos y
   guardar como Excel con formato) y el sitio escribe y ejecuta el código Python de cada paso, con
   comentarios en español. Con un clic lo llevas al editor para modificarlo.
+- 🔊 **Sonidos personalizables** (⚙️ en la barra superior): volumen, 5 paquetes sintetizados (Retro 8-bit,
+  Suave, Arcade, Cristal, Grave) o silencio, y cada evento (correcto, incorrecto, logro, subir de nivel,
+  perder vida, Game Over…) se puede cambiar por el de otro paquete o por **tu propio archivo de audio**
+  (se guarda solo en tu navegador). El administrador puede poner sonidos para todos en `assets/sounds/`
+  (instrucciones en `assets/sounds/LEEME.txt`).
 - 🧪 **Laboratorio de datos**: sube tus propios archivos **Excel (.xlsx/.xls) o CSV**, analízalos con
   pandas, numpy, matplotlib, seaborn, scipy, scikit-learn y statsmodels, y descarga los resultados
   (`to_excel`, `to_csv`). Incluye una caja de herramientas con código listo: leer todas las hojas,
@@ -96,6 +101,8 @@ content/lab_tools.php                Caja de herramientas del laboratorio
 assets/js/lab.js                     Subir, explorar y descargar archivos
 assets/js/asistente.js               Asistente de Excel: acciones → código Python
 assets/wheels/                       openpyxl y seaborn (no vienen en Pyodide)
+assets/js/sonidos.js, ajustes.php    Motor de sonidos personalizable y su página de ajustes
+assets/sounds/                       Sonidos del sitio opcionales (bien.mp3, logro.mp3…)
 database/schema.sql                  Esquema MySQL
 tools/test_lessons.py                Prueba automática de todo el contenido
 ```

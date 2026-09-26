@@ -1,0 +1,21 @@
+SONIDOS DEL SITIO
+=================
+
+Pon aquí archivos de audio (.mp3, .wav, .ogg o .m4a) con el nombre del evento
+y aparecerán para todos los usuarios en Ajustes → Sonidos, como paquete "Sonidos del sitio"
+y como opción en cada evento:
+
+  move.mp3      moverse por los menús
+  tab.mp3       cambiar de pestaña
+  go.mp3        entrar / confirmar
+  bien.mp3      respuesta correcta
+  mal.mp3       respuesta incorrecta
+  xp.mp3        ganar XP
+  fin.mp3       lección terminada
+  logro.mp3     logro desbloqueado
+  nivel.mp3     subir de nivel
+  vida.mp3      perder una vida (Infierno)
+  gameover.mp3  Game Over
+
+Consejo: usa sonidos cortos (menos de 2 segundos) y ligeros (menos de 200 KB).
+Asegúrate de tener derecho a usarlos (por ejemplo, sonidos con licencia libre).

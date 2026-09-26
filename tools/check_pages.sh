@@ -15,7 +15,7 @@ trap 'kill $SERVIDOR 2>/dev/null; rm -f "$COOKIES"' EXIT
 sleep 1
 
 paginas=$(php -r 'define("ROOT", "."); require "includes/course.php"; foreach (lesson_order() as $s) echo "lesson.php?l=$s\n";'
-          printf "index.php\nlearn.php\nplayground.php\nranking.php\nlogin.php\nregister.php\n")
+          printf "index.php\nlearn.php\nplayground.php\nranking.php\najustes.php\nlogin.php\nregister.php\n")
 total_fallos=0
 
 revisar() {

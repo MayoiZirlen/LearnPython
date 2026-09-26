@@ -1,38 +1,12 @@
 /* Utilidades generales: llamadas a la API, notificaciones, confeti y XP. */
 const App = {
-  audio: null,
-
   sonidoActivo() {
-    try { return localStorage.getItem('pyaprende:sonido') !== 'no'; } catch (e) { return true; }
+    return Sonidos.activo();
   },
 
-  /** Sonidos cortitos generados con WebAudio: [frecuencia, inicio, duración, forma]. */
-  tono(notas) {
-    if (!App.sonidoActivo()) return;
-    try {
-      App.audio = App.audio || new (window.AudioContext || window.webkitAudioContext)();
-      const a = App.audio;
-      notas.forEach(([f, t, d, forma]) => {
-        const o = a.createOscillator(); const g = a.createGain();
-        o.frequency.value = f; o.type = forma || 'square';
-        g.gain.setValueAtTime(0.06, a.currentTime + t);
-        g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + t + d);
-        o.connect(g).connect(a.destination);
-        o.start(a.currentTime + t); o.stop(a.currentTime + t + d);
-      });
-    } catch (e) { /* sin audio */ }
-  },
-
+  /** Sonidos del juego: ahora pasan por el motor personalizable (assets/js/sonidos.js). */
   sfx(tipo) {
-    const sonidos = {
-      move: [[880, 0, 0.04]],
-      tab: [[440, 0, 0.05], [660, 0.04, 0.06]],
-      go: [[523, 0, 0.08], [784, 0.07, 0.08], [1047, 0.14, 0.18]],
-      bien: [[660, 0, 0.1], [990, 0.09, 0.2]],
-      mal: [[196, 0, 0.18, 'sawtooth'], [147, 0.12, 0.22, 'sawtooth']],
-      fin: [[523, 0, 0.12], [659, 0.1, 0.12], [784, 0.2, 0.12], [1047, 0.3, 0.4]],
-    };
-    App.tono(sonidos[tipo] || sonidos.move);
+    Sonidos.reproducir(tipo);
   },
 
   async api(action, data = {}) {
@@ -59,18 +33,21 @@ const App = {
     const stEl = document.getElementById('hdr-streak');
     if (xpEl) App.countUp(xpEl, res.xp);
     if (stEl) stEl.textContent = res.streak;
-    if (res.xp_gained > 0) App.floatXp('+' + res.xp_gained + ' XP');
+    if (res.xp_gained > 0) { App.floatXp('+' + res.xp_gained + ' XP'); App.sfx('xp'); }
     if (res.level_up) {
+      setTimeout(() => App.sfx('nivel'), 350);
       App.toast(`${res.level.icon} ¡Subiste al nivel ${res.level.number}: ${res.level.name}!`, 'level', 5000);
       App.confetti(160);
     }
     const logros = res.achievements || [];
     if (logros.length > 3) {
       // Muchos logros a la vez (por ejemplo al desbloquear el NG+): una sola notificación.
+      setTimeout(() => App.sfx('logro'), 700);
       App.toast(`<span class="toast-icon">🏅</span><div><b>¡${logros.length} logros desbloqueados!</b><br>${logros.map((a) => `${a.icon} ${a.title}`).join('<br>')}</div>`, 'achievement', 8000);
       App.confetti(160);
     } else {
       logros.forEach((a, i) => setTimeout(() => {
+        App.sfx('logro');
         App.toast(`<span class="toast-icon">${a.icon}</span><div><b>¡Logro desbloqueado!</b><br>${a.title}: ${a.desc}</div>`, 'achievement', 6000);
         App.confetti(80);
       }, 600 * i));
