@@ -19,7 +19,7 @@ $mult = xp_multiplier($slug);
 $payload = [
     'slug' => $slug,
     'title' => $lesson['title'],
-    'steps' => array_map(function ($s) {
+    'steps' => array_map(function ($s) use ($mult) {
         $s['xp'] = step_xp($s) * $mult;
         return $s;
     }, $lesson['steps']),

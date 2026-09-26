@@ -128,6 +128,13 @@ pip install numpy pandas matplotlib openpyxl scipy scikit-learn seaborn
 python tools/test_lessons.py
 ```
 
-El script comprueba que cada solución pase su revisión, que el código inicial **no** la pase, que los ejemplos corran sin error y que funcionen todas las herramientas del laboratorio.
+Y para revisar que ninguna página muestre avisos de PHP (Warning/Notice), con MySQL encendido:
+
+```bash
+bash tools/check_pages.sh            # como invitado
+bash tools/check_pages.sh usuario clave   # también con sesión iniciada
+```
+
+El script de lecciones comprueba que cada solución pase su revisión, que el código inicial **no** la pase, que los ejemplos corran sin error y que funcionen todas las herramientas del laboratorio.
 
 > ⚠️ En strings PHP con comillas dobles, escapa el `$` de las f-strings de Python (`\$`), o usa nowdoc (`<<<'PY'`).
