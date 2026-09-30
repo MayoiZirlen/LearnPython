@@ -83,6 +83,42 @@ En ningún servidor: se copian al disco virtual de Python **dentro de tu navegad
 pero se pierden al recargar la página (vuelve a subirlos o descarga tus resultados antes de salir).
 El límite es de 30 MB por archivo.
 
+## Publicar gratis en GitHub Pages
+
+Además de XAMPP, el sitio se puede publicar en **GitHub Pages** para usarlo desde cualquier
+computadora o celular, sin servidor. Es ideal para pocas personas (por ejemplo, tú y una amiga).
+
+**Cómo funciona la versión de GitHub Pages:** `tools/build_static.php` genera una versión estática
+(`dist/`). Todo lo que ya corría en el navegador funciona igual: lecciones, Python, Laboratorio,
+Asistente de Excel y sonidos. Lo que cambia es la parte que usaba PHP + MySQL:
+
+| XAMPP | GitHub Pages |
+|-------|--------------|
+| Cuentas con contraseña | **Perfil local** (nombre + avatar) guardado en el navegador |
+| Progreso, XP y logros en MySQL | Progreso, XP y logros en el navegador (`localStorage`) |
+| Ranking de todos los usuarios | Ranking con **códigos de jugador** que se intercambian entre amigos |
+| — | **Respaldo**: descargar / cargar el progreso (para cambiar de computadora) |
+
+> ⚠️ Si se borran los datos del navegador se pierde el progreso: descarga un respaldo de vez en cuando
+> desde *Mi perfil*.
+
+**Pasos (una sola vez):**
+
+1. El repositorio debe ser **público** (en el plan gratuito, Pages no funciona con repos privados):
+   *Settings → General → Danger Zone → Change repository visibility → Public*.
+   El repo no guarda contraseñas: `config/config.php` está en `.gitignore`.
+2. *Settings → Pages → Build and deployment → Source:* **GitHub Actions**.
+3. Haz push (o ve a *Actions → Publicar en GitHub Pages → Run workflow*). En 1–2 minutos el sitio
+   queda en `https://<tu-usuario>.github.io/<nombre-del-repo>/`.
+
+Cada push a la rama principal vuelve a publicar el sitio automáticamente
+(`.github/workflows/pages.yml`). Para probar la versión estática en tu computadora:
+
+```bash
+php tools/build_static.php dist
+cd dist && python -m http.server 8000     # abre http://localhost:8000
+```
+
 ## Estructura del proyecto
 
 ```
@@ -102,6 +138,9 @@ assets/js/lab.js                     Subir, explorar y descargar archivos
 assets/js/asistente.js               Asistente de Excel: acciones → código Python
 assets/wheels/                       openpyxl y seaborn (no vienen en Pyodide)
 assets/js/sonidos.js, ajustes.php    Motor de sonidos personalizable y su página de ajustes
+assets/js/local.js                   Modo GitHub Pages: perfil, progreso y ranking en el navegador
+tools/build_static.php               Genera el sitio estático (dist/) para GitHub Pages
+.github/workflows/pages.yml          Publicación automática en GitHub Pages
 assets/sounds/                       Sonidos del sitio opcionales (bien.mp3, logro.mp3…)
 database/schema.sql                  Esquema MySQL
 tools/test_lessons.py                Prueba automática de todo el contenido

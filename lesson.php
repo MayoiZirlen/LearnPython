@@ -52,7 +52,7 @@ require __DIR__ . '/includes/header.php';
     <h1><?= e(($lesson['icon'] ?? '') . ' ' . $lesson['title']) ?></h1>
   </div>
   <?php if (!$user): ?>
-    <div class="alert alert-info">Modo invitado: tu progreso no se guardará. <a href="register.php">Crea una cuenta</a> para ganar XP.</div>
+    <div class="alert alert-info guest-alert">Modo invitado: tu progreso no se guardará. <a href="register.php">Crea una cuenta</a> para ganar XP.</div>
   <?php endif; ?>
   <div id="step-container"></div>
   <div class="lesson-nav">

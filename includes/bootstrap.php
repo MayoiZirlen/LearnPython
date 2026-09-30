@@ -2,9 +2,22 @@
 // Punto de arranque común: sesión, configuración, base de datos y utilidades.
 declare(strict_types=1);
 
-session_start();
-
 define('ROOT', dirname(__DIR__));
+
+/**
+ * Modo estático (GitHub Pages): tools/build_static.php genera el sitio sin servidor.
+ * En ese modo no hay sesión ni base de datos: el progreso vive en el navegador (assets/js/local.js).
+ */
+function is_static(): bool
+{
+    return defined('STATIC_BUILD');
+}
+
+if (is_static()) {
+    $_SESSION = [];
+} else {
+    session_start();
+}
 
 $configFile = ROOT . '/config/config.php';
 if (!is_file($configFile)) {
@@ -57,6 +70,9 @@ function redirect(string $url): never
 
 function csrf_token(): string
 {
+    if (is_static()) {
+        return 'static';
+    }
     if (empty($_SESSION['csrf'])) {
         $_SESSION['csrf'] = bin2hex(random_bytes(16));
     }
@@ -70,6 +86,9 @@ function csrf_check(?string $token): bool
 
 function current_user(): ?array
 {
+    if (is_static()) {
+        return null;
+    }
     static $user = false;
     if ($user === false) {
         $user = null;

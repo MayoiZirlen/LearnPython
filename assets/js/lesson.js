@@ -65,7 +65,7 @@
         ${perdida ? `<p class="go-lost">−${perdida} XP · el progreso de esta lección se perdió</p>` : '<p class="go-lost">El progreso de esta lección se perdió</p>'}
         <div class="finish-actions">
           <button class="btn btn-primary btn-lg" data-retry>🔥 Reintentar</button>
-          <a class="btn btn-ghost" href="learn.php">🏳️ Huir al mapa</a>
+          <a class="btn btn-ghost" href="${App.url('learn')}">🏳️ Huir al mapa</a>
         </div>
       </div>`;
     document.body.appendChild(capa);
@@ -278,8 +278,8 @@
     App.sfx('fin');
     App.confetti(220);
     const siguiente = L.next
-      ? `<a class="btn btn-primary btn-lg" href="lesson.php?l=${encodeURIComponent(L.next)}">Siguiente: ${E(L.nextTitle)} ▶</a>`
-      : '<a class="btn btn-primary btn-lg" href="profile.php">🏆 Ver mis logros</a>';
+      ? `<a class="btn btn-primary btn-lg" href="${App.url('lesson', L.next)}">Siguiente: ${E(L.nextTitle)} ▶</a>`
+      : `<a class="btn btn-primary btn-lg" href="${App.url('profile')}">🏆 Ver mis logros</a>`;
     cont.innerHTML = `<div class="step-card finish">
       <div class="finish-banner">¡Lección superada!</div>
       ${INFIERNO ? `<div class="hearts final">${Array.from({ length: VIDAS_MAX }, (_, k) => `<span class="heart ${k < vidas ? '' : 'lost'}">${k < vidas ? '❤️' : '🖤'}</span>`).join('')}${vidas === VIDAS_MAX ? '<b>¡INTOCABLE!</b>' : ''}</div>` : ''}
@@ -293,7 +293,7 @@
         ${res && res.ok ? `<div><b>🔥 ${res.streak}</b><small>días de racha</small></div>` : ''}
       </div>
       ${window.PYAPRENDE.logged ? '' : '<div class="alert alert-info">Crea una cuenta para guardar este progreso 😉</div>'}
-      <div class="finish-actions">${siguiente}<a class="btn btn-ghost" href="learn.php">🗺️ Volver al mapa</a></div>
+      <div class="finish-actions">${siguiente}<a class="btn btn-ghost" href="${App.url('learn')}">🗺️ Volver al mapa</a></div>
     </div>`;
     document.querySelector('.lesson-nav').hidden = true;
     $('lesson-bar').style.width = '100%';

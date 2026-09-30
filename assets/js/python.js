@@ -226,8 +226,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const status = document.createElement('div');
   status.className = 'py-status';
   status.dataset.pyStatus = '';
-  document.body.appendChild(status);
-  Py.iniciar();
+  // Solo despertamos a Python (varios MB) en páginas que ejecutan código
+  if (document.querySelector('[data-runner], #asistente') || window.LESSON) {
+    document.body.appendChild(status);
+    Py.iniciar();
+  }
 
   document.querySelectorAll('[data-runner]').forEach((root) => {
     const r = montarRunner(root);

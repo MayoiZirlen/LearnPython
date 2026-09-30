@@ -9,7 +9,19 @@ const App = {
     Sonidos.reproducir(tipo);
   },
 
+  /** Rutas internas: en GitHub Pages las páginas son .html (lesson-<slug>.html). */
+  url(pagina, slug) {
+    if (window.PYAPRENDE.static) return pagina === 'lesson' ? `lesson-${slug}.html` : `${pagina}.html`;
+    return pagina === 'lesson' ? `lesson.php?l=${encodeURIComponent(slug)}` : `${pagina}.php`;
+  },
+
   async api(action, data = {}) {
+    if (window.PYAPRENDE.static) {
+      // Sin servidor: el progreso se guarda en este navegador (assets/js/local.js)
+      const res = Local.api(action, data);
+      if (res && res.ok) App.celebrate(res);
+      return res;
+    }
     if (!window.PYAPRENDE.logged) return null;
     try {
       const r = await fetch('api/progress.php', {

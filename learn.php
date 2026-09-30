@@ -46,13 +46,13 @@ require __DIR__ . '/includes/header.php';
     <div class="clock" id="clock">00:00</div>
     <div class="tier-tabs" role="tablist">
       <?php foreach (TIERS as $key => $label): ?>
-        <button class="tier-tab <?= $key === $currentTier ? 'active' : '' ?> <?= $key === 'ngplus' ? 'tier-ngplus' : '' ?> <?= $key === 'infierno' ? 'tier-infierno' : '' ?>" data-tier="<?= $key ?>" role="tab"><?= ($key === 'ngplus' && !$ngUnlocked) || ($key === 'infierno' && !$infUnlocked) ? '🔒 ' : '' ?><?= $key === 'infierno' ? '🔥 ' : '' ?><?= e($label) ?></button>
+        <button class="tier-tab <?= $key === $currentTier ? 'active' : '' ?> <?= $key === 'ngplus' ? 'tier-ngplus' : '' ?> <?= $key === 'infierno' ? 'tier-infierno' : '' ?>" data-tier="<?= $key ?>" role="tab"><?php if (in_array($key, ['ngplus', 'infierno'], true)): ?><span class="tab-lock" <?= ($key === 'ngplus' ? $ngUnlocked : $infUnlocked) ? 'hidden' : '' ?>>🔒 </span><?php endif; ?><?= $key === 'infierno' ? '🔥 ' : '' ?><?= e($label) ?></button>
       <?php endforeach; ?>
     </div>
   </div>
 
   <?php if (!$user): ?>
-    <div class="alert alert-info">Estás jugando como invitado: <a href="register.php">crea una cuenta</a> para guardar tu partida, ganar XP y sellos de rango.</div>
+    <div class="alert alert-info guest-alert">Estás jugando como invitado: <a href="register.php">crea una cuenta</a> para guardar tu partida, ganar XP y sellos de rango.</div>
   <?php endif; ?>
 
   <div class="select-body">
@@ -65,21 +65,15 @@ require __DIR__ . '/includes/header.php';
               <ul class="infierno-rules">
                 <li>🚫💡 Sin pistas</li><li>🚫👀 Sin soluciones</li><li>❤️❤️❤️ 3 vidas por lección</li><li>☠️ Game Over = pierdes el progreso</li><li>⭐ XP ×2</li>
               </ul>
-              <?php if ($infUnlocked): ?>
-                <p>🔓 <b>Las puertas están abiertas.</b> Buena suerte… la vas a necesitar. 😈</p>
-              <?php else: ?>
-                <p>🔒 Se desbloquea al terminar el juego principal y el New Game Plus (<b><?= $mainDone + $ngDone ?>/<?= count(main_lessons()) + count(ngplus_lessons()) ?></b>). Puedes asomarte… bajo tu propio riesgo. 🔥</p>
-              <?php endif; ?>
+              <p data-lock="open" <?= $infUnlocked ? '' : 'hidden' ?>>🔓 <b>Las puertas están abiertas.</b> Buena suerte… la vas a necesitar. 😈</p>
+              <p data-lock="closed" <?= $infUnlocked ? 'hidden' : '' ?>>🔒 Se desbloquea al terminar el juego principal y el New Game Plus (<b><span data-cuenta="main+ngplus"><?= $mainDone + $ngDone ?></span>/<?= count(main_lessons()) + count(ngplus_lessons()) ?></b>). Puedes asomarte… bajo tu propio riesgo. 🔥</p>
             </div>
           <?php endif; ?>
           <?php if (!empty($m['ngplus']) && !$ngBanner): $ngBanner = true; ?>
             <div class="ngplus-banner">
               <div class="ngplus-logo">NEW GAME<span>+</span></div>
-              <?php if ($ngUnlocked): ?>
-                <p>🔓 <b>¡Desbloqueado!</b> Terminaste el juego principal. Ahora los enemigos son más fuertes… y tú también.</p>
-              <?php else: ?>
-                <p>🔒 Se desbloquea al terminar el juego principal (<b><?= $mainDone ?>/<?= count(main_lessons()) ?></b> lecciones). Puedes entrar de todos modos, pero ¡la dificultad sube mucho! 😈</p>
-              <?php endif; ?>
+              <p data-lock="open" <?= $ngUnlocked ? '' : 'hidden' ?>>🔓 <b>¡Desbloqueado!</b> Terminaste el juego principal. Ahora los enemigos son más fuertes… y tú también.</p>
+              <p data-lock="closed" <?= $ngUnlocked ? 'hidden' : '' ?>>🔒 Se desbloquea al terminar el juego principal (<b><span data-cuenta="main"><?= $mainDone ?></span>/<?= count(main_lessons()) ?></b> lecciones). Puedes entrar de todos modos, pero ¡la dificultad sube mucho! 😈</p>
             </div>
           <?php endif; ?>
           <div class="song-group-title"><span><?= $m['icon'] ?> Módulo <?= e(module_number($m)) ?></span> <?= e($m['title']) ?></div>

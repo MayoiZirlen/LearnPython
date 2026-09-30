@@ -1,6 +1,17 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
 
+if (is_static()) {
+    // GitHub Pages: el ranking se arma con los "códigos de jugador" que se comparten entre amigos
+    $pageTitle = 'Ranking';
+    $page = 'ranking';
+    $mainClass = 'container narrow';
+    require __DIR__ . '/includes/header.php';
+    echo '<h1>🏆 Ranking</h1><div id="local-ranking"><p class="muted">Cargando…</p></div>';
+    require __DIR__ . '/includes/footer.php';
+    return;
+}
+
 $user = current_user();
 $rows = db()->query('SELECT u.id, u.username, u.avatar, u.xp, u.streak,
         (SELECT COUNT(*) FROM lesson_progress lp WHERE lp.user_id = u.id) AS lessons

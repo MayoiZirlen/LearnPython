@@ -1,6 +1,36 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
 
+if (is_static()) {
+    // GitHub Pages: no hay cuentas en un servidor; se crea un perfil local en este navegador
+    $avatars = ['🐍', '🐼', '🦊', '🐱', '🦉', '🐸', '🐧', '🦄', '🤖', '👩‍💻', '👨‍💻', '🧙'];
+    $pageTitle = 'Crear perfil';
+    $page = 'register';
+    $mainClass = 'container narrow';
+    require __DIR__ . '/includes/header.php';
+    ?>
+<div class="card auth-card">
+  <h1>Crea tu perfil 🎮</h1>
+  <p class="muted">Tu progreso, XP y logros se guardan en <b>este navegador</b>. Desde tu perfil puedes exportarlos para usarlos en otra computadora.</p>
+  <div class="alert alert-info" id="perfil-existente" hidden></div>
+  <form class="form" id="local-register">
+    <label>Elige tu avatar</label>
+    <div class="avatar-picker">
+      <?php foreach ($avatars as $i => $a): ?>
+        <label><input type="radio" name="avatar" value="<?= e($a) ?>" <?= $i === 0 ? 'checked' : '' ?>><span><?= e($a) ?></span></label>
+      <?php endforeach; ?>
+    </div>
+    <label for="nombre">¿Cómo te llamas?</label>
+    <input id="nombre" name="nombre" required minlength="2" maxlength="24" autocomplete="nickname">
+    <button class="btn btn-primary btn-block">¡Empezar a jugar!</button>
+  </form>
+  <p class="muted center small">¿Ya tenías progreso en otra computadora? Crea tu perfil y luego impórtalo desde <a href="profile.php">Mi perfil</a>.</p>
+</div>
+    <?php
+    require __DIR__ . '/includes/footer.php';
+    return;
+}
+
 $errors = [];
 $avatars = ['🐍', '🐼', '🦊', '🐱', '🦉', '🐸', '🐧', '🦄', '🤖', '👩‍💻', '👨‍💻', '🧙'];
 $data = ['username' => '', 'email' => '', 'avatar' => '🐍'];

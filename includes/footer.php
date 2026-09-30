@@ -4,6 +4,10 @@
 </footer>
 <div id="toasts"></div>
 <script src="<?= e(asset('assets/js/sonidos.js')) ?>"></script>
+<?php if (is_static()): ?>
+<script src="<?= e(asset('assets/js/catalogo.js')) ?>"></script>
+<script src="<?= e(asset('assets/js/local.js')) ?>"></script>
+<?php endif; ?>
 <script src="<?= e(asset('assets/js/app.js')) ?>"></script>
 <?php if (!empty($usesPython)): ?>
 <script src="<?= e(asset('assets/js/python.js')) ?>"></script>

@@ -26,6 +26,7 @@ $f = flash();
 <script>
 window.PYAPRENDE = <?= json_encode([
     'logged' => (bool) $user,
+    'static' => is_static(),
     'csrf' => csrf_token(),
     'pyodideUrl' => config('pyodide_url'),
     'pyVersion' => python_version(),
@@ -47,7 +48,9 @@ window.PYAPRENDE = <?= json_encode([
   </nav>
   <div class="user-area">
     <a class="settings-link <?= $page === 'ajustes' ? 'active' : '' ?>" href="ajustes.php" title="Ajustes de sonido">⚙️</a>
-    <?php if ($user): ?>
+    <?php if (is_static()): ?>
+      <span id="local-user"></span>
+    <?php elseif ($user): ?>
       <span class="pill streak" title="Racha de días">🔥 <b id="hdr-streak"><?= (int) $user['streak'] ?></b></span>
       <span class="pill xp" title="Experiencia">⭐ <b id="hdr-xp"><?= (int) $user['xp'] ?></b> XP</span>
       <a class="avatar" href="profile.php" title="<?= e($lvl['name']) ?>"><?= e($user['avatar']) ?></a>

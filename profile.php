@@ -1,6 +1,16 @@
 <?php
 require __DIR__ . '/includes/bootstrap.php';
 
+if (is_static()) {
+    // GitHub Pages: el perfil vive en el navegador y lo dibuja assets/js/local.js
+    $pageTitle = 'Mi perfil';
+    $page = 'profile';
+    require __DIR__ . '/includes/header.php';
+    echo '<div id="local-profile"><p class="muted">Cargando tu perfil…</p></div>';
+    require __DIR__ . '/includes/footer.php';
+    return;
+}
+
 $user = require_login();
 $uid = (int) $user['id'];
 $lvl = level_info((int) $user['xp']);
